@@ -1,0 +1,32 @@
+.main-content ul li {
+    margin-left: 24px
+}
+.main-content ul {
+    list-style: disc; /* Dấu chấm đen */
+  }
+  
+  ol {
+    list-style: decimal; /* Dấu số */
+  }
+  
+  /* Hoặc bạn có thể chọn loại dấu chấm khác nhau cho các mục khác nhau */
+  li.special {
+    list-style: square; /* Dấu hình vuông */
+  }
+  
+  /* Nếu bạn muốn thay đổi màu sắc hoặc kích thước của dấu chấm */
+  ul.custom-color {
+    list-style: disc inside;
+    color: red; /* Màu đỏ */
+    font-size: 18px; /* Kích thước chữ 18px */
+}
+/* Đổi màu và kiểu chấm trong danh sách số */
+.main-content ol {
+  list-style: decimal inside;
+  margin-left: 8px;
+  /* color: blue; */
+}
+
+
+
+  
