@@ -34,28 +34,61 @@ const Dashboard = () => {
                             </div>
                             <div className="min-[1200px]:mt-5 max-[1200px]:mt-5 min-[1200px]:w-fit min-[1200px]:m-auto  max-[1200px]:w-fit max-[1200px]:items-center">
                                 <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
-                                    <Card className="overflow-hidden bg-white rounded-lg shadow-md" >
+                                    <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }} >
                                         <div className="flex items-center justify-center p-4">
                                             <img src="/users.svg" alt="abc" width={50} height={50} />
                                         </div>
-                                        <div className="text-center p-4">
-                                            <p className="text-lg font-semibold"><strong>Tổng Số Người Dùng</strong></p>
+                                        <div className="text-center">
+                                            <p className="text-sm font-semibold"><strong>Tổng Số Người Dùng</strong></p>
                                             <p className="text-2xl text-gray-700"><strong>{data.totalUsers}</strong></p>
                                         </div>
                                     </Card>
                                 </div>
                                 <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
-                                    <Card className="overflow-hidden bg-white rounded-lg shadow-md">
+                                    <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }}>
                                         <div className="flex items-center justify-center p-4">
                                             <img src="/doctor.svg" alt="abc" width={50} height={50} />
                                         </div>
-                                        <div className="text-center p-4">
-                                            <p className="text-lg font-semibold"><strong>Tổng Số Bác Sĩ</strong></p>
+                                        <div className="text-center">
+                                            <p className="text-sm font-semibold"><strong>Tổng Số Bác Sĩ</strong></p>
                                             <p className="text-2xl text-gray-700"><strong>{data.totalDoctors}</strong></p>
                                         </div>
                                     </Card>
                                 </div>
-                                <div className="inline-block mr-4 hover:scale-105 max-[1200px]:mt-3 ">
+                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
+                                    <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }}>
+                                        <div className="flex items-center justify-center p-4">
+                                            <img src="/hospital.svg" alt="abc" width={50} height={50} />
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-sm font-semibold"><strong>Tổng Số Trung Tâm</strong></p>
+                                            <p className="text-2xl text-gray-700"><strong>{data.totalCenters}</strong></p>
+                                        </div>
+                                    </Card>
+                                </div>
+                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
+                                    <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }}>
+                                        <div className="flex items-center justify-center p-4">
+                                            <img src="/vaccine.svg" alt="abc" width={50} height={50} />
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-sm font-semibold"><strong>Tổng Số Vắc Xin</strong></p>
+                                            <p className="text-2xl text-gray-700"><strong>{data.totalVaccines}</strong></p>
+                                        </div>
+                                    </Card>
+                                </div>
+                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
+                                    <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }}>
+                                        <div className="flex items-center justify-center p-4">
+                                            <img src="/blog.svg" alt="abc" width={50} height={50} />
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-sm font-semibold"><strong>Tổng Số Bài Blog</strong></p>
+                                            <p className="text-2xl text-gray-700"><strong>{data.totalBlogs}</strong></p>
+                                        </div>
+                                    </Card>
+                                </div>
+                                {/* <div className="inline-block mr-4 hover:scale-105 max-[1200px]:mt-3 ">
                                     <Card
                                         style={{
                                             width: 210,
@@ -69,37 +102,7 @@ const Dashboard = () => {
                                             <p className="text-4xl text-center"><strong>{data.totalCenters}</strong></p>
                                         </div>
                                     </Card>
-                                </div>
-                                <div className="inline-block hover:scale-105 max-[1200px]:mt-3 mr-4 ">
-                                    <Card
-                                        style={{
-                                            width: 210,
-                                        }}
-                                    >
-                                        <div className="inline-block mr-3">
-                                            <img src="/vaccine.svg" alt="abc" width={50} height={50} className="hidden" />
-                                        </div>
-                                        <div className="inline-block">
-                                            <p className="text-center"><strong>Tổng Số Vaccine</strong></p>
-                                            <p className="text-4xl text-center"><strong>{data.totalVaccines}</strong></p>
-                                        </div>
-                                    </Card>
-                                </div>
-                                <div className="inline-block hover:scale-105 max-[1200px]:mt-3" >
-                                    <Card
-                                        style={{
-                                            width: 210,
-                                        }}
-                                    >
-                                        <div className="inline-block mr-3">
-                                            <img src="/blog.svg" alt="abc" width={50} height={50} className="hidden" />
-                                        </div>
-                                        <div className="inline-block" style={{ textAlign: 'center' }}>
-                                            <p className="text-center"><strong>Tổng Số Blog</strong></p>
-                                            <p className="text-4xl text-center"><strong>{data.totalBlogs}</strong></p>
-                                        </div>
-                                    </Card>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="min-[1200px]:mt-10 min-[1200px]:w-fit min-[1200px]:m-auto mb-5">
                                 <div className="inline-block mr-5">

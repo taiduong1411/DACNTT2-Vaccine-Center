@@ -46,7 +46,7 @@ function Sidebar({ props }) {
                                 key: '4',
                                 icon: <VideoCameraOutlined />,
                                 label: <Link to="/admin/doctor-manager" rel="noopener noreferrer">
-                                    Quản Lý Bác Sĩ
+                                    Quản Lý Nhân Viên
                                 </Link>,
                             },
                             {
@@ -58,6 +58,13 @@ function Sidebar({ props }) {
                             },
                             {
                                 key: '6',
+                                icon: <VideoCameraOutlined />,
+                                label: <Link to="/admin/disease-manager" rel="noopener noreferrer">
+                                    Quản Lý Dịch Bệnh Địa Phương
+                                </Link>,
+                            },
+                            {
+                                key: '7',
                                 icon: <LogoutOutlined />,
                                 label: <Link to="/login" rel="noopener noreferrer">
                                     Logout

@@ -1,16 +1,80 @@
 import { Link } from 'react-router-dom';
-import { Button, Dropdown, Space, Avatar, Modal, message } from 'antd';
+import { Button, Dropdown, Space, Avatar, Modal, message, Table } from 'antd';
 import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import { axiosCli } from '../../interceptor/axios';
 // import { UploadOutlined } from '@ant-design/icons'
 import upload from '../../utils/upload';
+import { jwtDecode } from 'jwt-decode';
 function Navbar({ props }) {
+    const columnsHistoryVaccine = [
+        {
+            title: 'Ngày Tiêm',
+            dataIndex: 'dateBooking',
+            key: 'dateBooking'
+        },
+        {
+            title: 'Thời Gian Tiêm',
+            dataIndex: 'timeBooking',
+            key: 'timeBooking'
+        },
+        {
+            title: 'Trung Tâm',
+            dataIndex: 'c_name',
+            key: 'c_name'
+        },
+        {
+            title: 'Loại Vắc Xin',
+            key: 'v_name',
+            render: (record) => {
+                return (
+                    <div>
+                        <Link to={`/vaccine/${record.slug}`}>{record.v_name}</Link>
+                    </div>
+                )
+            }
+        }
+    ];
+    const columnsCurrentBooking = [
+        {
+            title: 'Ngày Tiêm',
+            dataIndex: 'dateBooking',
+            key: 'dateBooking'
+        },
+        {
+            title: 'Thời Gian Tiêm',
+            dataIndex: 'timeBooking',
+            key: 'timeBooking'
+        },
+        {
+            title: 'Trung Tâm',
+            dataIndex: 'c_name',
+            key: 'c_name'
+        },
+        {
+            title: 'Tên Vắc Xin',
+            key: 'v_name',
+            render: (record) => {
+                return <div>
+                    <Link to={`/vaccine/${record.slug}`}>{record.v_name}</Link>
+                </div>
+            }
+        },
+        {
+            title: '',
+            key: 'acction',
+            render: (record) => {
+                return <Button type="danger" className='bg-red-600 text-white' data-id={record._id} onClick={showCancelBooking}>Huỷ Lịch</Button>
+            }
+        }
+
+    ]
     const [login, setLogin] = useState(true);
     const { register, handleSubmit } = useForm();
-    const [data, setData] = useState([]);
     const [file, setFile] = useState('');
+    const [level, setLevel] = useState(true);
+    // Set Up Message
     const [messageApi, contextHolder] = message.useMessage();
     const success = (msg) => {
         messageApi.open({
@@ -27,12 +91,19 @@ function Navbar({ props }) {
     useEffect(() => {
         checkLogin();
         getData();
+        getHistoryVaccine();
+        getCurrentBooking();
     }, []);
     const checkLogin = async () => {
         const accessToken = localStorage.getItem('accessToken');
         if (!accessToken) return setLogin(false)
+        if (jwtDecode(accessToken).level == '2' || jwtDecode(accessToken).level == '3') {
+            // console.log('pass');
+            setLevel(false);
+        }
         setLogin(true)
     }
+    const [data, setData] = useState([]);
     const getData = async () => {
         await axiosCli().get('account/my-info').then(res => {
             if (res.status == 200) {
@@ -40,6 +111,21 @@ function Navbar({ props }) {
             } else {
                 setData([]);
             }
+        })
+    }
+
+    const [dataHistoryVaccine, setDataHistoryVaccine] = useState([]);
+    const getHistoryVaccine = async () => {
+        await axiosCli().get('user/history-vaccine').then(res => {
+            setDataHistoryVaccine(res.data)
+        })
+    }
+
+    const [dataCurrentBooking, setDataCurrentBooking] = useState([]);
+    const getCurrentBooking = async () => {
+        await axiosCli().get('user/current-booking').then(res => {
+            // console.log(res.data);
+            setDataCurrentBooking(res.data)
         })
     }
     // Update Info
@@ -62,30 +148,61 @@ function Navbar({ props }) {
             if (res.status == 200) {
                 setOpenUpdate(false);
                 getData();
-                success(res.data.msg)
+                success(res.data.msg);
+                setTimeout(() => {
+                    window.location.href = '/home'
+                }, 1000)
             } else {
                 // setOpenUpdate(false);
                 error(res.data.msg);
             }
         })
     }
+    // setup Navbar when scroll
     const [nav, setNav] = useState();
     const changeNav = () => {
         return window.scrollY >= 30 ? setNav(true) : setNav(false);
     };
     window.addEventListener('scroll', changeNav);
-
+    // History Vaccine
+    const [isShowHistoryVaccine, setIsShowHistoryVaccine] = useState(false);
+    const historyVaccine = () => {
+        setIsShowHistoryVaccine(true);
+    }
+    // Current Booking
+    const [isShowCurrentBooking, setIsShowCurrentBooking] = useState(false);
+    const currentBooking = () => {
+        setIsShowCurrentBooking(true);
+    }
+    // Cancel Booking
+    const showCancelBooking = async (e) => {
+        const id = e.currentTarget.dataset.id;
+        await axiosCli().get(`user/cancel-booking/${id}`).then(res => {
+            if (res.status == 200) {
+                messageApi.open({
+                    type: 'success',
+                    content: res.data.msg
+                })
+                getCurrentBooking();
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: res.data.msg
+                });
+            }
+        })
+    }
     const items = [
         {
             label: <p onClick={updateInformation}>Cập Nhật Thông Tin</p>,
             key: '0',
         },
         {
-            label: <a href="https://www.aliyun.com">Lịch Sử Tiêm</a>,
+            label: <p onClick={historyVaccine} className={`${level ? "" : "hidden"}`}>Lịch Sử Tiêm</p>,
             key: '1',
         },
         {
-            label: <a href="https://www.aliyun.com">Lịch Tiêm Hiện Tại</a>,
+            label: <p onClick={currentBooking} className={`${level ? "" : "hidden"}`}>Lịch Tiêm Chờ Duyệt</p>,
             key: '2',
         },
         {
@@ -130,7 +247,7 @@ function Navbar({ props }) {
                                     </Space>
                                     :
                                     <Space>
-                                        <Avatar src='./public/noavatar.jpeg' size={'large'} />
+                                        <Avatar src='/noavatar.jpeg' size={'large'} />
                                     </Space>
                                 }
                             </a>
@@ -149,6 +266,7 @@ function Navbar({ props }) {
                     </div>
                 }
             </div>
+            {/* Update Information */}
             <Modal title="Cập Nhật Thông Tin" open={openUpdate} okButtonProps={{ style: { display: 'none' } }} onCancel={handleUpdateCancel}>
                 <form onSubmit={handleSubmit(onUpdateSubmit)}>
                     <div>
@@ -178,6 +296,14 @@ function Navbar({ props }) {
                     </div>
                     <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Submit</button>
                 </form>
+            </Modal>
+            {/* History Vaccine */}
+            <Modal width={1000} open={isShowHistoryVaccine} onCancel={() => setIsShowHistoryVaccine(!isShowHistoryVaccine)} okButtonProps={{ style: { display: 'none' } }}>
+                <Table dataSource={dataHistoryVaccine} columns={columnsHistoryVaccine} />
+            </Modal>
+            {/* Current Booking */}
+            <Modal width={2000} open={isShowCurrentBooking} onCancel={() => setIsShowCurrentBooking(!isShowCurrentBooking)} okButtonProps={{ style: { display: 'none' } }} >
+                <Table dataSource={dataCurrentBooking} columns={columnsCurrentBooking} />
             </Modal>
         </nav>
     );

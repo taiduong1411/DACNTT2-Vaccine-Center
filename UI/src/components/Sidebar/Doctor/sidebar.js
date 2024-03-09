@@ -22,14 +22,14 @@ function Sidebar({ props }) {
                             {
                                 key: '1',
                                 icon: <CalendarOutlined />,
-                                label: <Link to="/doctor" rel="noopener noreferrer">
+                                label: <Link to="/doctor/dashboard" rel="noopener noreferrer">
                                     Dashboard
                                 </Link>,
                             },
                             {
                                 key: '2',
                                 icon: <CalendarOutlined />,
-                                label: <Link to="/vaccine-schedule" rel="noopener noreferrer">
+                                label: <Link to="/doctor/vaccine-schedule" rel="noopener noreferrer">
                                     Lịch Tiêm
                                 </Link>,
                             },

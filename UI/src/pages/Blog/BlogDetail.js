@@ -6,6 +6,8 @@ import './blog.css'
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { Button } from "antd";
+import CarouselBlog from "../../components/CarouselCard/CarouselBlog";
 const BlogDetail = () => {
     const { slug } = useParams();
     const nav = useNavigate();
@@ -25,6 +27,7 @@ const BlogDetail = () => {
         await axiosCli().get('user/all-blogs').then(res => {
             const data = res.data;
             setDataAllBlog(data.filter((e) => e.slug != slug));
+            // setDataAllBlog(data);
         })
     }
     return (
@@ -47,6 +50,12 @@ const BlogDetail = () => {
                         </div>
                         <div className="text-sm">
                             Cập nhật vào: {dataBlog.updatedAt}
+                        </div>
+                        <div className="text-sm ml-4">
+                            Tag:
+                            {dataBlog.hashtags?.map((tag, index) => (
+                                <Button key={index} className="ml-1">{tag}</Button>
+                            ))}
                         </div>
 
                         <div className="ml-auto flex"> {/* Sử dụng ml-auto để đẩy về bên phải */}
@@ -71,32 +80,89 @@ const BlogDetail = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-10">
+            <div className="mt-20">
                 <h1 className="text-2xl mb-5 ml-10" style={{ borderLeft: '8px solid black' }}>
-                    &nbsp; Tin Tức Mới Nhất
+                    &nbsp; Tin Tức
                 </h1>
                 <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 justify-center sm:flex mt-10 mb-10">
-                    {dataAllBlog.map((blog) => (
-                        <div key={blog.pro_code} onClick={() => nav(`/blog/${blog.slug}`)}>
-                            <div className="w-full h-80 sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden">
-                                <div className="flex justify-center items-center">
-                                    <img
-                                        className="w-full h-40 object-cover sm:h-44 sm:w-60"
-                                        src={`${blog.cover}`}
-                                        alt=""
-                                    />
-                                </div>
-                                <div className="p-4">
-                                    <p className="text-lg font-semibold mb-2">{blog.title}</p>
-                                    <p className="text-gray-600">{blog.sub_content}</p>
-                                </div>
-                            </div>
+                    <div className="glide-01 relative w-full">
+                        <div className="overflow-hidden" data-glide-el="track">
+                            <ul className="whitespace-no-wrap flex-no-wrap [backface-visibility: hidden] [transform-style: preserve-3d] [touch-action: pan-Y] [will-change: transform] relative flex w-full overflow-hidden p-0">
+                                <li></li>
+                                <li></li>
+                                {dataAllBlog && dataAllBlog?.map((blog) => (
+                                    <li key={blog.pro_code} className="mr-4" onClick={() => nav(`/blog/${blog.slug}`)}>
+                                        <div className="border w-full h-warp-content sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden">
+                                            <div className="flex justify-center items-center">
+                                                <img
+                                                    className="w-full h-40 object-cover sm:h-44"
+                                                    src={`${blog.cover}`}
+                                                    alt=""
+                                                />
+                                            </div>
+                                            <div className="p-4">
+                                                <p className="text-sm font-semibold mb-2">{blog.title}</p>
+                                                <p className="text-gray-600 text-sm text-ellipsis overflow-hidden whitespace-nowrap">{blog.sub_content}</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                ))}
+                                <li></li>
+                                <li></li>
+                            </ul>
                         </div>
-                    ))}
+                        <div
+                            className="absolute left-0 top-1/2 flex h-0 w-full items-center justify-between px-4 "
+                            data-glide-el="controls"
+                        >
+                            <button
+                                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700 bg-white/20 text-slate-700 transition duration-300 hover:border-slate-900 hover:text-slate-900 focus-visible:outline-none lg:h-12 lg:w-12"
+                                data-glide-dir="<"
+                                aria-label="prev slide"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="h-5 w-5"
+                                >
+                                    <title>prev slide</title>
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+                                    />
+                                </svg>
+                            </button>
+                            <button
+                                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-700 bg-white/20 text-slate-700 transition duration-300 hover:border-slate-900 hover:text-slate-900 focus-visible:outline-none lg:h-12 lg:w-12"
+                                data-glide-dir=">"
+                                aria-label="next slide"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="h-5 w-5"
+                                >
+                                    <title>next slide</title>
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
             </div>
-
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/glide.js"></script>
         </div>
     )
 }

@@ -22,6 +22,7 @@ import BlogManager from './pages/Admin/BlogManager/BlogManager';
 import VaccineDetail from './pages/Vaccine/VaccineDetail';
 import BlogDetail from './pages/Blog/BlogDetail';
 import VaccineDetailAdmin from './pages/Admin/VaccineManager/VaccineDetail/VaccineDetail';
+import DiseaseManager from './pages/Admin/DiseaseManager/DiseaseManager';
 function App() {
   return (
     <>
@@ -45,6 +46,7 @@ function App() {
             <Route path="/admin/center-manager" element={<CenterManager />} />
             <Route path='/admin/doctor-manager' element={<DoctorManager />} />
             <Route path='/admin/blog-manager' element={<BlogManager />} />
+            <Route path='/admin/disease-manager' element={<DiseaseManager />} />
             <Route path='/admin/vaccine-manager/vaccine-detail/:slug/:pro_code' element={<VaccineDetailAdmin />} />
           </Route>
         </Routes>

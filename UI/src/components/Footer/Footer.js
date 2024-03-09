@@ -1,30 +1,89 @@
 function Footer() {
     return (
 
-        <div className="bg-blue-400 text-white">
+        <footer className="text-slate-500">
 
-            <div className="container mx-auto py-8 flex flex-col md:flex-row items-center justify-between">
-                <div className="text-center md:text-left mb-4 md:mb-0">
-                    <h3 className="text-2xl font-bold">Your Company Name</h3>
-                    <p className="text-sm">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
-                </div>
-                {/* <div className="flex items-center justify-center space-x-4 md:space-x-8">
-                    <a href="#" className="text-gray-300 hover:text-white">Home</a>
-                    <a href="#" className="text-gray-300 hover:text-white">About</a>
-                    <a href="#" className="text-gray-300 hover:text-white">Services</a>
-                    <a href="#" className="text-gray-300 hover:text-white">Contact</a>
-                </div> */}
-                <div className="flex flex-col items-center md:flex-row mt-4 md:mt-0">
-                    <span className="text-gray-400 text-sm mb-2 md:mb-0">© 2024 Your Company. All rights reserved.</span>
-                    <ul className="text-gray-400 text-sm ml-0 md:ml-4">
-                        <li>Center 1</li>
-                        <li>Center 2</li>
-                        <li>Center 3</li>
-                        {/* Thêm các trung tâm khác nếu cần */}
-                    </ul>
+            <div className="pt-16 pb-12 text-sm border-t border-slate-200 bg-slate-100">
+                <div className="container px-6 mx-auto">
+                    <div className="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
+                        <nav className="col-span-2 md:col-span-4 lg:col-span-3" aria-labelledby="footer-product-4">
+                            <h3 className="mb-6 text-base font-medium text-slate-700" id="footer-product-4">Product</h3>
+                            <ul>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Features </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Customers </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Why us? </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Pricing </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <nav className="col-span-2 md:col-span-4 lg:col-span-3" aria-labelledby="footer-docs-4">
+                            <h3 className="mb-6 text-base font-medium text-slate-700" id="footer-docs-4">Docs & Help</h3>
+                            <ul>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Documentation</a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Training </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> System status </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> FAQ's </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Help Center </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <nav className="col-span-2 md:col-span-4 lg:col-span-3" aria-labelledby="footer-about-4">
+                            <h3 className="mb-6 text-base font-medium text-slate-700" id="footer-about-4">About us</h3>
+                            <ul>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> About us </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Careers </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Leadership </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Blog</a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Events </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <nav className="col-span-2 md:col-span-4 lg:col-span-3" aria-labelledby="footer-get-in-touch-4">
+                            <h3 className="mb-6 text-base font-medium text-slate-700" id="footer-get-in-touch-4">Get in touch</h3>
+                            <ul>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Contact </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Support </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Partners </a>
+                                </li>
+                                <li className="mb-2 leading-6">
+                                    <a href="javascript:void(0)" className="transition-colors duration-300 hover:text-emerald-500 focus:text-emerald-600"> Join research </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
-        </div>
+        </footer>
     );
 }
 

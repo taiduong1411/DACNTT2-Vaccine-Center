@@ -2,6 +2,9 @@
     margin: auto;
     min-width: 300px;
     min-height: 300px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
 }
 .content strong {
     font-size: 20px;
