@@ -18,6 +18,14 @@ const DoctorModel = new Schema({
             cid: String,
             date: String,
         }
+    },
+    assignDisease: {
+        type: [{
+            desc: String,
+            note: String,
+            status: Boolean,
+            diseaseId: String
+        }]
     }
 }, {
     timestamps: true

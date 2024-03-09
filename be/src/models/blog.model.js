@@ -18,11 +18,16 @@ const BlogModel = new Schema({
         type: String,
         required: true
     },
-    // author: {
-    // },
+    author: {
+        type: String,
+        required: true
+    },
     status: {
         type: Boolean,
         default: true
+    },
+    hashtags: {
+        type: [String],
     },
     slug: {
         type: String,

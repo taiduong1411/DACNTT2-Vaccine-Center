@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -36,11 +38,15 @@ app.use((req, res, next) => {
 const accountRouter = require('./src/routes/account.router');
 const adminRouter = require('./src/routes/admin.router');
 const userRouter = require('./src/routes/user.router');
+const doctorRouter = require('./src/routes/doctor.router');
+
+// config controller
+
 app.use('/api/account', accountRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/user', userRouter);
+app.use('/api/doctor', doctorRouter);
 
-
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })

@@ -5,7 +5,10 @@ const Centers = require('../models/center.model');
 const Accounts = require('../models/account.model');
 const Blogs = require('../models/blog.model');
 const bcrypt = require('bcrypt');
-const slugify = require('slugify')
+const slugify = require('slugify');
+const jwt_decode = require('../services/tokenDecode');
+// config connect socket
+const io = require('../services/socket');
 const AdminController = {
     getAllVaccines: async (req, res, next) => {
         await Vaccines.find().lean().sort({ createdAt: -1 }).then(async vaccines => {
@@ -138,6 +141,39 @@ const AdminController = {
             return res.status(500).json({ msg: "Có lỗi xảy ra khi cập nhật chi tiết vaccine" });
         }
     },
+    getSearchVaccine: async (req, res, next) => {
+        await Vaccines.find({
+            "$or": [
+                { pro_name: { $regex: req.params.key } },
+                { pro_code: { $regex: req.params.key } },
+
+            ]
+        }).then(async vaccines => {
+            vaccines = await Promise.all(
+                vaccines.map(async vaccine => {
+                    return {
+                        _id: vaccine._id,
+                        slug: vaccine.slug,
+                        pro_name: vaccine.pro_name,
+                        pro_code: vaccine.pro_code,
+                        img: vaccine.img,
+                        cover: vaccine.cover,
+                        countCenter: vaccine.centerOf.length,
+                        detailCenter: await Promise.all((vaccine.centerOf).map((e) =>
+                            Centers.findOne({ _id: e.cid }).then(center => {
+                                return center ? { center: center.center_name, amount: e.amount } : null
+                            })
+                        )),
+                        detailAmount: (vaccine.centerOf).map((e) => [{ cid: e.cid, amount: e.amount }]),
+                        createdAt: vaccine.createdAt.toLocaleString('en-GB')
+                    }
+                })
+            )
+            return res.status(200).json(vaccines)
+        }).catch(err => {
+            return res.status(500).json({ msg: 'server err' })
+        })
+    },
     // Dashboard
     dataDashboard: async (req, res, next) => {
         let totalVaccines = await Vaccines.countDocuments();
@@ -244,6 +280,60 @@ const AdminController = {
             return res.status(500).json({ msg: 'server error' })
         }
     },
+    getSearchDoctor: async (req, res, next) => {
+        await Accounts.find({
+            "$or": [
+                { fullname: { $regex: req.params.key } },
+                { email: { $regex: req.params.key } },
+                { phone: { $regex: req.params.key } },
+                { dob: { $regex: req.params.key } },
+            ],
+            level: '2',
+        }).then(async accounts => {
+            const getCenterName = async (email) => {
+                let name = '';
+                await Doctors.findOne({ email: email }).then(async doctor => {
+                    await Centers.findById({ _id: doctor.centerOf }).then(center => {
+                        name = center.center_name;
+                    })
+                })
+                return name
+            }
+            accounts = await Promise.all(
+                accounts.map(async (doctor) => {
+                    return {
+                        _id: doctor._id,
+                        email: doctor.email,
+                        fullname: doctor.fullname,
+                        avatar: doctor.avatar,
+                        createdAt: (doctor.createdAt) ? (doctor.createdAt).toLocaleDateString('en-GB') : '01/01/2024',
+                        centerOf: await getCenterName(doctor.email),
+                        status: doctor.status
+                    }
+                })
+            )
+            return res.status(200).json(accounts)
+        }).catch(err => {
+            return res.status(500).json({ msg: 'server error' })
+        })
+    },
+    getDoctorByIdCenter: async (req, res, next) => {
+        let doctors = await Doctors.find().lean()
+        doctors = doctors.filter(e => e.centerOf == req.params.cid);
+        const getNameByEmail = async (email) => {
+            let account = await Accounts.findOne({ email: email });
+            return account.fullname
+        }
+        doctors = await Promise.all(
+            doctors.map(async (d) => {
+                return {
+                    _id: d._id,
+                    fullname: await getNameByEmail(d.email),
+                }
+            })
+        )
+        return res.status(200).json(doctors);
+    },
     // Blog
     getAllBlogs: async (req, res, next) => {
         try {
@@ -251,7 +341,7 @@ const AdminController = {
             blogs = blogs.map(blog => {
                 return {
                     ...blog,
-                    createdAt: (blog.createdAt).toLocaleDateString('en-GB')
+                    createdAt: (blog.createdAt).toLocaleDateString('en-GB'),
                 }
             })
             return res.status(200).json(blogs);
@@ -264,10 +354,18 @@ const AdminController = {
         try {
             await Blogs.findOne({ title: req.body.title }).then(async blog => {
                 if (blog) return res.status(300).json({ msg: 'Tiêu Đề Đã Tồn Tại' })
-                await Blogs(req.body).save();
+                const token = jwt_decode.decodeToken(req.headers['authorization'])
+                let nameAuthor = await Accounts.findOne({ _id: token._id });
+                const data = {
+                    ...req.body,
+                    author: nameAuthor.fullname ? nameAuthor.fullname : nameAuthor.email,
+
+                }
+                await Blogs(data).save();
                 return res.status(200).json({ msg: 'Tạo Mới Blog Thành Công' });
             })
         } catch (error) {
+            console.log(error);
             return res.status(500).json({ msg: 'server error' })
         }
     },
@@ -278,7 +376,137 @@ const AdminController = {
         } catch (error) {
             return res.status(400).json({ msg: "Xoá Thất Bại" });
         }
-    }
+    },
+    searchBlog: async (req, res, next) => {
+        await Blogs.find({
+            "$or": [
+                { title: { $regex: req.params.key } },
+                { sub_content: { $regex: req.params.key } },
+                { hashtags: { $in: [req.params.key] } },
+                { author: { $regex: req.params.key } },
+            ],
+        }).then(async blogs => {
+            blogs = blogs.map(blog => {
+                return {
+                    _id: blog._id,
+                    title: blog.title,
+                    sub_content: blog.sub_content,
+                    author: blog.author,
+                    hashtags: blog.hashtags,
+                    status: blog.status,
+                    cover: blog.cover,
+                    slug: blog.slug,
+                    createdAt: (blog.createdAt).toLocaleDateString('en-GB'),
+                }
+            })
+            return res.status(200).json(blogs);
+        }).catch(err => {
+            return res.status(500).json({ msg: 'server error' })
+        })
+    },
+    // disease
+    getDataDisease: async (req, res, next) => {
+        const centers = await Centers.find().lean();
+        let dataReport = [];
 
+        centers.forEach(center => {
+            const centerName = center.center_name;
+            const centerId = center._id; // Lấy ID của center
+            const reports = center.reportDisease; // Lấy mảng các báo cáo bệnh tật của center
+
+            // Kiểm tra nếu có báo cáo bệnh tật và là một mảng
+            if (reports && Array.isArray(reports)) {
+                // Gắn ID của center vào mỗi object trong mảng reportDisease
+                reports.forEach(report => {
+                    report.centerName = centerName;
+                    // Thêm trường centerId vào mỗi object trong mảng reportDisease
+                    report.centerId = centerId;
+                    dataReport.push(report); // Thêm object đã được gắn ID vào mảng dataReport
+                });
+            }
+        });
+        return res.status(200).json(dataReport)
+    },
+    delReport: async (req, res, next) => {
+        const centerId = req.params.cid; // ID của center
+        const reportId = req.params._id; // ID của report cần xoá
+        try {
+            const result = await Centers.findOneAndUpdate(
+                { _id: centerId }, // Điều kiện tìm center
+                { $pull: { reportDisease: { _id: reportId } } }, // Xoá report có _id là reportId từ mảng reportDisease
+                { new: true } // Trả về dữ liệu mới sau khi cập nhật
+            );
+            return res.status(200).json({ msg: 'Xoá Thành Công' }); // Trả về kết quả sau khi xoá
+        } catch (error) {
+            return res.status(200).json({ msg: 'Xoá Thất Bại' });
+        }
+    },
+    searchReport: async (req, res, next) => {
+        await Centers.find({
+            "$or": [
+                { center_name: { $regex: req.params.key } },
+                { reportDisease: { $elemMatch: { desc: { $regex: req.params.key } } } }
+            ],
+        }).lean().then(async centers => {
+            let dataReport = [];
+            centers.forEach(center => {
+                const centerName = center.center_name;
+                const centerId = center._id; // Lấy ID của center
+                const reports = center.reportDisease; // Lấy mảng các báo cáo bệnh tật của center
+
+                // Kiểm tra nếu có báo cáo bệnh tật và là một mảng
+                if (reports && Array.isArray(reports)) {
+                    // Gắn ID của center vào mỗi object trong mảng reportDisease
+                    reports.forEach(report => {
+                        report.centerName = centerName;
+                        // Thêm trường centerId vào mỗi object trong mảng reportDisease
+                        report.centerId = centerId;
+                        dataReport.push(report); // Thêm object đã được gắn ID vào mảng dataReport
+                    });
+                }
+            });
+            return res.status(200).json(dataReport)
+
+        }).catch(err => {
+            console.log(err);
+        })
+    },
+    assignDisease: async (req, res, next) => {
+        try {
+            const doctor = await Doctors.findById(req.body.did);
+            let data = {
+                diseaseId: req.body.diseaseId,
+                desc: req.body.desc,
+                note: req.body.note,
+                status: false
+            }
+
+            const updatedDoctor = await Doctors.findByIdAndUpdate(doctor._id, { $push: { assignDisease: data } }, { new: true });
+
+            if (!updatedDoctor) {
+                return res.status(404).json({ msg: 'Không tìm thấy bác sĩ' });
+            }
+
+            const center = await Centers.findById(updatedDoctor.centerOf);
+
+            if (!center) {
+                return res.status(404).json({ msg: 'Không tìm thấy trung tâm' });
+            }
+
+            const updatedCenter = await Centers.findOneAndUpdate(
+                { _id: updatedDoctor.centerOf, "reportDisease._id": data.diseaseId },
+                { $set: { "reportDisease.$.isComplete": '2' } }
+            );
+
+            if (!updatedCenter) {
+                return res.status(404).json({ msg: 'Không tìm thấy báo cáo bệnh' });
+            }
+
+            return res.status(200).json({ msg: 'Phân công giải quyết dịch bệnh thành công' });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ msg: 'Có lỗi xảy ra' });
+        }
+    }
 }
 module.exports = AdminController;

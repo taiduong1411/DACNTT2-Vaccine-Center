@@ -19,6 +19,14 @@ const CenterModel = new Schema({
     status: {
         type: Boolean,
         default: true
+    },
+    reportDisease: {
+        type: [{
+            email: String,
+            phone: String,
+            desc: String,
+            isComplete: String,
+        }]
     }
 }, {
     timestamps: true
