@@ -11,6 +11,9 @@ const DoctorModel = new Schema({
         type: String,
         required: true
     },
+    certificates: {
+        type: [String]
+    },
     vac_schedule: {
         type: {
             uid: String,

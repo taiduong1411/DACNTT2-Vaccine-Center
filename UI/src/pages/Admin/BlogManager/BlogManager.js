@@ -4,7 +4,7 @@ import { Layout } from 'antd';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useEffect, useState } from "react";
-import { Table, Space, Badge, Button, Modal, message, Popover } from 'antd'
+import { Table, Space, Badge, Button, Modal, message, Popover, Avatar, Switch } from 'antd'
 import { axiosCli } from "../../../interceptor/axios";
 import { useForm } from 'react-hook-form'
 import upload from "../../../utils/upload";
@@ -14,9 +14,12 @@ const { Content } = Layout;
 const BlogManager = () => {
     // config
     const [content, setContent] = useState('');
-
+    const [updateContent, setUpdateContent] = useState('');
     const handleContentChange = (newContent) => {
         setContent(newContent);
+    };
+    const handleUpdateContentChange = (newContent) => {
+        setUpdateContent(newContent);
     };
     const modules = {
         toolbar: [
@@ -85,7 +88,7 @@ const BlogManager = () => {
             render: (record) => (
                 <Space size="middle">
                     <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record._id} data-name={record.title} onClick={showDel} >Delete</Button>
-                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} >Update</Button>
+                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} onClick={showUpdateOpen} >Update</Button>
                 </Space>
             ),
         },
@@ -106,7 +109,8 @@ const BlogManager = () => {
     const [addOpen, setAddOpen] = useState(false);
     const [file, setFile] = useState('');
     const showAdd = () => {
-        setAddOpen(true)
+        setAddOpen(true);
+        setHashtags([]);
     }
     const onAddSubmit = async (data) => {
         const url = await upload(file, 'DACNTT2/blog');
@@ -186,7 +190,6 @@ const BlogManager = () => {
     };
     const removeData = (index) => {
         setHashtags(hashtags.filter((el, i) => i !== index));
-        // setDataBeforeAddSend(dataBeforeAddSend.filter((el, i) => i !== index));
     }
     // Search
     const onSearchSubmit = async (data) => {
@@ -207,6 +210,23 @@ const BlogManager = () => {
             getDataBlog();
         }
     }
+    // Update
+    const [updateOpen, setUpdateOpen] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState([]);
+
+
+    const showUpdateOpen = async (event) => {
+        setUpdateOpen(true);
+        const id = event.currentTarget.dataset.id;
+        await axiosCli().get(`admin/blog-by-id/${id}`).then(async res => {
+            setDataUpdate(res.data);
+            setHashtags(res.data.hashtags);
+        })
+    }
+    const onChange = (checked) => {
+        console.log(`switch to ${checked}`);
+    };
+
 
     return (
         <div>
@@ -234,7 +254,7 @@ const BlogManager = () => {
                     </Content>
                 </Layout>
             </div>
-            <Modal open={addOpen} width={2000} okButtonProps={{ style: { display: 'none' } }} onCancel={() => setAddOpen(false)}>
+            <Modal open={addOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={() => setAddOpen(false)}>
                 <form onSubmit={handleSubmit(onAddSubmit)}>
                     <div className="mb-4">
                         <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tiêu Đề Chính</label>
@@ -310,6 +330,82 @@ const BlogManager = () => {
                         Sẽ bị xoá và không thể khôi phục
                     </div>
                 </div>
+            </Modal>
+            <Modal open={updateOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={() => setUpdateOpen(false)}>
+                <form onSubmit={handleSubmit(onAddSubmit)}>
+                    <div className="mb-4">
+                        <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tiêu Đề Chính</label>
+                        <input type="text" {...register('title')} defaultValue={dataUpdate.title} placeholder="Tiêu Đề Chính" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="sub_content" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Mô tả ngắn</label>
+                        <textarea rows={5} {...register('sub_content')} defaultValue={dataUpdate.sub_content} placeholder="Tiêu Đề Phụ" name="sub_content" id="sub_content" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
+                    </div>
+                    <div className="mb-6">
+                        <label htmlFor="cover" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Ảnh Đại Diện</label>
+                        <input onChange={(e) => setFile(e.target.files[0])} type="file" name="cover" id="cover" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                    </div>
+                    <div className="mb-6">
+                        <Avatar src={`${dataUpdate.cover}`} style={{ border: '1px solid rgb(220,220,220)' }} size={'large'} />
+                    </div>
+                    {/* Hashtag */}
+                    <div className="mb-6 flex justify-between items-center">
+                        <div className="flex">
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={handleInputChange}
+                                className="bg-gray-100 border border-gray-300 text-gray-900 sm:text-sm rounded-l-lg focus:ring-primary-600 focus:border-primary-600 p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Hash Tag"
+
+                            />
+                            <button
+                                onClick={handleAddHashtag}
+                                className="bg-blue-500 text-white rounded-r-lg transition duration-300 hover:bg-blue-600 px-4 py-2"
+                            >
+                                Add
+                            </button>
+                        </div>
+                        <div className="ml-2">
+                            {hashtags?.map((tag, index) => (
+                                <span key={index} onClick={() => removeData(index)} className="inline-block bg-gray-200 text-gray-700 px-3 py-1 rounded-full mr-2 mb-2">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <ReactQuill className="h-60" modules={modules} value={dataUpdate.content} onChange={handleUpdateContentChange} />
+                    </div>
+
+                    <div className="mt-16 float-right">
+                        {preview
+                            ?
+                            <Button type="primary" style={{ backgroundColor: 'red', marginRight: '10px' }} onClick={closePreview} >Close Preview</Button>
+                            :
+                            <Button type="primary" style={{ backgroundColor: 'blue', marginRight: '10px' }} onClick={showPreview} >Preview</Button>
+                        }
+
+                    </div>
+
+                    <div className="h-20"></div>
+                    {preview
+                        ?
+                        <div>
+                            <h3>Preview:</h3>
+                            <div dangerouslySetInnerHTML={{ __html: content }} />
+                        </div>
+                        :
+                        ''
+                    }
+                    <div className="mt-5">
+                        <div>Trạng Thái:</div>
+                        <Switch checked={dataUpdate.status} onChange={onChange} />
+                        &nbsp;
+                    </div>
+
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Submit</button>
+                </form>
             </Modal>
         </div>
     )

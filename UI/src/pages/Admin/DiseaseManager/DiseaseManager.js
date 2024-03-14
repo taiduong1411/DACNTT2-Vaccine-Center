@@ -14,8 +14,14 @@ function DiseaseManager() {
         },
         {
             title: "Thông Tin Người Báo Cáo",
-            dataIndex: 'email',
-            key: 'email'
+            key: 'email',
+            render: (record) => {
+                if (record.email) {
+                    return <div>{record.email}</div>
+                } else {
+                    return <div>{record.phone}</div>
+                }
+            }
         },
         {
             title: 'Mô Tả Dịch Bệnh',

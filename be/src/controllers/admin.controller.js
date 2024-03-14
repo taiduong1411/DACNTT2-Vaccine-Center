@@ -233,6 +233,23 @@ const AdminController = {
             })
             return name
         }
+        const calculateTimeSince = (startDate) => {
+            const millisecondsInDay = 1000 * 60 * 60 * 24;
+            const millisecondsInMonth = millisecondsInDay * 30; // Giả sử mỗi tháng có 30 ngày
+
+            const currentTime = new Date();
+            const elapsedTime = currentTime.getTime() - startDate.getTime();
+
+            if (elapsedTime < millisecondsInDay) {
+                return Math.floor(elapsedTime / (1000 * 60 * 60)) + ' giờ trước'; // Số giờ
+            } else if (elapsedTime < millisecondsInMonth) {
+                return Math.floor(elapsedTime / (millisecondsInDay)) + ' ngày trước'; // Số ngày
+            } else if (elapsedTime < millisecondsInMonth * 12) {
+                return Math.floor(elapsedTime / (millisecondsInMonth)) + ' tháng trước'; // Số tháng
+            } else {
+                return Math.floor(elapsedTime / (millisecondsInMonth * 12)) + ' năm trước'; // Số năm
+            }
+        }
         try {
             await Accounts.find({ level: '2' }).lean().sort({ createdAt: -1 }).then(async accounts => {
                 accounts = await Promise.all(
@@ -242,17 +259,15 @@ const AdminController = {
                             email: doctor.email,
                             fullname: doctor.fullname,
                             avatar: doctor.avatar,
-                            createdAt: (doctor.createdAt) ? (doctor.createdAt).toLocaleDateString('en-GB') : '01/01/2024',
+                            createdAt: await calculateTimeSince(doctor.createdAt),
                             centerOf: await getCenterName(doctor.email),
                             status: doctor.status
                         }
                     })
                 )
-                // console.log(accounts);
                 return res.status(200).json(accounts);
             })
         } catch (error) {
-            console.log(error);
             return res.status(500).json({ msg: 'server error' });
         }
     },
@@ -270,8 +285,10 @@ const AdminController = {
                 await Accounts(data).save();
                 const dataDoctor = {
                     email: req.body.email,
-                    centerOf: req.body.centerOf
+                    centerOf: req.body.centerOf,
+                    certificates: req.body.certificates
                 }
+                // console.log(dataDoctor);
                 await Doctors(dataDoctor).save();
                 return res.status(200).json({ msg: 'Thêm Thành Công' });
             })
@@ -402,6 +419,11 @@ const AdminController = {
             return res.status(200).json(blogs);
         }).catch(err => {
             return res.status(500).json({ msg: 'server error' })
+        })
+    },
+    getBlogById: async (req, res, next) => {
+        await Blogs.findById(req.params.id).then(blog => {
+            return res.status(200).json(blog)
         })
     },
     // disease

@@ -2,13 +2,13 @@ import Footer from "../../components/Footer/Footer";
 import Navbar from "../../components/NavbarUser/Navbar";
 import { useEffect, useState } from 'react'
 import { axiosCli } from "../../interceptor/axios";
-// import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import CarouselVaccine from "../../components/CarouselCard/CarouselVaccine";
 import CarouselBlog from "../../components/CarouselCard/CarouselBlog";
-import CarouselTestimonial from "../../components/CarouselCard/CarouselTestimonial";
+// import CarouselTestimonial from "../../components/CarouselCard/CarouselTestimonial";
 
 import { message, notification } from "antd";
 import SliderIntro from "../../components/Silder/SliderIntro";
@@ -23,13 +23,22 @@ function Home() {
     const [dataVaccine, setDataVaccine] = useState([]);
     const [dataUser, setDataUser] = useState([]);
     const nav = useNavigate();
+    const [spinning, setSpinning] = useState(false);
+    const showLoader = () => {
+        setSpinning(true);
+        setTimeout(() => {
+            setSpinning(false);
+        }, 2000);
+    };
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             getData();
             getDataBlog();
             getDataCenter();
-        }, 1000);
+        }, 3000);
         getDataUser();
+        showLoader();
         // Đảm bảo rằng bạn xóa bỏ setInterval khi component unmount để tránh rò rỉ bộ nhớ
         return () => clearInterval(intervalId);
     }, []);
@@ -117,6 +126,7 @@ function Home() {
         <div className="">
             {contextHolderMessage}
             {contextHolderNotification}
+            <Spin spinning={spinning} fullscreen />
             <div className="">
                 <Navbar props={props} />
             </div>

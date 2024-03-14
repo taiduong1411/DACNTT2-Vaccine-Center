@@ -37,7 +37,7 @@ const DoctorManager = () => {
             }
         },
         {
-            title: 'Ngày tạo',
+            title: 'Thời Gian Công Tác',
             dataIndex: 'createdAt',
             key: 'createdAt'
         },
@@ -46,8 +46,7 @@ const DoctorManager = () => {
             key: 'Action',
             render: (record) => (
                 <Space size="middle">
-                    <Button type="primary" style={{ backgroundColor: 'red' }} onClick={showDelModal} >Delete</Button>
-                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} >Update</Button>
+                    <Button type="primary" style={{ backgroundColor: 'blue' }} data-id={record._id} >Cập Nhật</Button>
                 </Space>
             ),
         },
@@ -79,9 +78,9 @@ const DoctorManager = () => {
             ...data,
             avatar: url ? url : 'https://inkythuatso.com/uploads/thumbnails/800/2023/03/9-anh-dai-dien-trang-inkythuatso-03-15-27-03.jpg',
             password: '1',
-            level: '2'
+            level: '2',
+            certificates: certificates ? certificates : ''
         }
-        // console.log(allData);
         await axiosCli().post('admin/add-doctor', allData).then(res => {
             if (res.status == 200) {
                 messageApi.open({
@@ -97,14 +96,6 @@ const DoctorManager = () => {
                 })
             }
         })
-    }
-    // Delete
-    const [delOpen, setDelOpen] = useState(false);
-    const showDelModal = () => {
-        setDelOpen(true)
-    }
-    const handleDel = () => {
-
     }
     // Search
     const onSearchSubmit = async (data) => {
@@ -124,6 +115,22 @@ const DoctorManager = () => {
         if (e.target.value.length < 1) {
             getDataDoctor();
         }
+    }
+    // Handle HashTag
+    const [inputValue, setInputValue] = useState('');
+    const [certificates, setCertificates] = useState([]);
+    const handleInputChange = (e) => {
+        // console.log(e.target.value);
+        setInputValue(e.target.value);
+    };
+    const handleAddCertificate = (event) => {
+        event.preventDefault();
+        setCertificates([...certificates, inputValue]);
+        setInputValue('');
+    };
+    const removeData = (index) => {
+        setCertificates(certificates.filter((el, i) => i !== index));
+        // setDataBeforeAddSend(dataBeforeAddSend.filter((el, i) => i !== index));
     }
     return (
         <div>
@@ -150,7 +157,7 @@ const DoctorManager = () => {
                     </Content>
                 </Layout>
             </div>
-            <Modal open={addOpen} okButtonProps={{ style: { display: 'none' } }} onCancel={() => setAddOpen(false)}>
+            <Modal open={addOpen} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={() => setAddOpen(false)}>
                 <form onSubmit={handleSubmit(onAddSubmit)}>
                     <div className="mb-4">
                         <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Họ Và Tên</label>
@@ -168,6 +175,32 @@ const DoctorManager = () => {
                         <label htmlFor="dob" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Ngày Sinh</label>
                         <input type="date" {...register('dob')} placeholder="Ngày Sinh" name="dob" id="dob" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
                     </div>
+                    {/* certificate */}
+                    <div className="mb-6 flex justify-between items-center">
+                        <div className="flex">
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={handleInputChange}
+                                className="bg-gray-100 border border-gray-300 text-gray-900 sm:text-sm rounded-l-lg focus:ring-primary-600 focus:border-primary-600 p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Nhập Chứng Chỉ ..."
+
+                            />
+                            <button
+                                onClick={handleAddCertificate}
+                                className="bg-blue-500 text-white rounded-r-lg transition duration-300 hover:bg-blue-600 px-4 py-2"
+                            >
+                                Thêm
+                            </button>
+                        </div>
+                        <div className="ml-2">
+                            {certificates.map((data, index) => (
+                                <span key={index} onClick={() => removeData(index)} className="inline-block bg-gray-200 text-gray-700 px-3 py-1 rounded-full mr-2 mb-2">
+                                    {data}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
                     <div className="mb-4">
                         <label htmlFor="dob" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Thuộc Trung Tâm</label>
                         <select name="centerOf" id="centerOf" {...register('centerOf')}>
@@ -180,20 +213,9 @@ const DoctorManager = () => {
                         <label htmlFor="avatar" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Ảnh Đại Diện</label>
                         <input onChange={(e) => setFile(e.target.files[0])} type="file" name="avatar" id="avatar" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                     </div>
-                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Submit</button>
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Tạo Tài Khoản</button>
                 </form>
 
-            </Modal>
-            <Modal title='Xoá Bác Sĩ' open={delOpen} onOk={handleDel} okButtonProps={{ style: { backgroundColor: 'red' } }} onCancel={() => setDelOpen(false)}>
-                <div>
-                    Sản Phẩm
-                    {/* <p className="mt-3 mb-3">
-                        <Avatar src={dataDel.cover} className="mr-4" />
-                        <strong>[{dataDel.pro_code}]</strong>
-                        {dataDel.pro_name}
-                    </p> */}
-                    Sẽ bị xoá và không thể khôi phục
-                </div>
             </Modal>
         </div>
     )

@@ -28,6 +28,7 @@ router.get('/all-blogs', adminRole, AdminController.getAllBlogs);
 router.post('/add-blog', adminRole, AdminController.addBlog);
 router.delete('/del-blog/:_id', adminRole, AdminController.delBlog);
 router.get('/search-blog/:key', adminRole, AdminController.searchBlog);
+router.get('/blog-by-id/:id', adminRole, AdminController.getBlogById);
 
 // disease
 router.get('/data-disease', adminRole, AdminController.getDataDisease);

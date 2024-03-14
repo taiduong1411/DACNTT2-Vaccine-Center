@@ -7,8 +7,19 @@ function Report({ props }) {
     const { register, handleSubmit } = useForm();
     const [openRe, setOpenRe] = useState(false);
     // const [messageApi, contextHolder] = message.useMessage();
+    // Check Login
+    const [isLogin, setIsLogin] = useState(false)
+    const checkLogin = () => {
+        const accessToken = localStorage.getItem('accessToken');
+        if (accessToken) {
+            setIsLogin(true);
+        } else {
+            setIsLogin(false);
+        }
+    }
     const [api, contextHolder] = notification.useNotification();
     const showReport = () => {
+        checkLogin();
         setOpenRe(true);
     }
 
@@ -21,6 +32,7 @@ function Report({ props }) {
             });
             setOpenRe(false)
         })
+
     }
     return (
         <div>
@@ -34,6 +46,21 @@ function Report({ props }) {
             </div>
             <Modal width={1000} title="Báo Cáo Dịch Bệnh" open={openRe} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={() => setOpenRe(false)}>
                 <form onSubmit={handleSubmit(onReportSubmit)}>
+                    {isLogin
+                        ?
+                        <div></div>
+                        :
+                        <div>
+                            <div className="mb-4">
+                                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Email</label>
+                                <input type="email" {...register('email')} placeholder="Email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Số Điện Thoại</label>
+                                <input type="text" {...register('phone')} placeholder="Số Điện Thoại" name="phone" id="phone" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                            </div>
+                        </div>
+                    }
                     <div className="mb-4">
                         <label htmlFor="timeBooking" className="block mb-2 text-sm font-medium text-gray-900 ">Chọn Trung Tâm</label>
                         <select name="center" id="center" {...register('center')}>
@@ -43,7 +70,6 @@ function Report({ props }) {
                             ))}
                         </select>
                     </div>
-
                     <div className="mb-4">
                         <label htmlFor="desc" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Mô Tả</label>
                         <textarea cols={4} rows={8} type="text" {...register('desc')} placeholder="Mô Tả Tình Hình Dịch Bệnh" id="desc" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />

@@ -20,28 +20,28 @@ const CenterManager = () => {
                 return <div>{record.address.number}, {record.address.street}, {record.address.district}, {record.address.province}</div>;
             }
         },
-        {
-            title: 'Trạng Thái',
-            key: 'status',
-            render: (record) => {
-                if (record.status == true) {
-                    return <Badge status="success" text='Hoạt động' />
-                } else {
-                    return <Badge status="error" text='Đang bị khoá' />
-                }
-            }
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            key: 'createdAt'
-        },
+        // {
+        //     title: 'Trạng Thái',
+        //     key: 'status',
+        //     render: (record) => {
+        //         if (record.status == true) {
+        //             return <Badge status="success" text='Hoạt động' />
+        //         } else {
+        //             return <Badge status="error" text='Đang bị khoá' />
+        //         }
+        //     }
+        // },
+        // {
+        //     title: 'Ngày tạo',
+        //     dataIndex: 'createdAt',
+        //     key: 'createdAt'
+        // },
         {
             title: 'Action',
             key: 'Action',
             render: (record) => (
                 <Space size="middle">
-                    <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record._id} data-name={record.pro_name} data-code={record.pro_code} data-cover={record.cover} >Delete</Button>
+                    <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record._id} data-name={record.pro_name} data-code={record.pro_code} data-cover={record.cover} >Tạm Ngưng Tài Khoản</Button>
                     <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} >Update</Button>
                 </Space>
             ),

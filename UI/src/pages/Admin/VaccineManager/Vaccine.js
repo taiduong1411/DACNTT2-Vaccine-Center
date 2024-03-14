@@ -274,12 +274,12 @@ function Vaccine() {
                             background: colorBgContainer,
                             borderRadius: borderRadiusLG,
                         }}>
-                            <Button onClick={showAdd} className="float-right mb-5">Add New</Button>
+                            <Button onClick={showAdd} className="float-right mb-5">Thêm mới</Button>
                             <div>
                                 <form className="space-y-1 md:space-y-6 mt-4 mb-10" onSubmit={handleSubmit(onSearchSubmit)}>
                                     <div className="relative mb-8">
                                         <input type="search" {...register("key")} onInput={onInput} id="default-search" className="block w-full p-4 pl-10 text-sm border border-gray-300 rounded-lg text-black bg-gray-50 focus:ring-blue-500 focus:border-blue-50 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Tìm kiếm vắc xin" required />
-                                        <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+                                        <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Tìm Kiếm</button>
                                     </div>
                                 </form>
                             </div>
@@ -289,7 +289,7 @@ function Vaccine() {
                 </Layout>
             </div>
             {/* MODAL ADD */}
-            <Modal open={addOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} onCancel={handleCancel}>
+            <Modal open={addOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={handleCancel}>
                 <form onSubmit={handleSubmit(onAddSubmit)}>
                     <div className="mb-4">
                         <label htmlFor="Tên Vaccine" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Vaccine</label>
@@ -331,7 +331,7 @@ function Vaccine() {
                         <label htmlFor="avatar" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Ảnh Vaccine</label>
                         <input type="file" multiple onChange={(e) => setFiles(e.target.files)} />
                     </div>
-                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Submit</button>
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Tạo Mới</button>
                 </form>
 
             </Modal>
@@ -348,7 +348,7 @@ function Vaccine() {
                 </div>
             </Modal>
             {/* MODAL UPDATE */}
-            <Modal open={updateOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} onCancel={handleCancel}>
+            <Modal open={updateOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={handleCancel}>
                 <form onSubmit={handleSubmit(onUpdateSubmit)}>
                     <div>
                         <label htmlFor="Tên Vaccine" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Vaccine</label>
@@ -395,7 +395,7 @@ function Vaccine() {
                             <Avatar key={index} src={`${data}`} className="mt-4 mr-4" style={{ border: '1px solid rgb(220,220,220)' }} size={'large'} />
                         ))}
                     </div>
-                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Submit</button>
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Sửa Đổi</button>
                 </form>
 
             </Modal>

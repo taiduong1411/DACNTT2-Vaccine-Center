@@ -148,19 +148,34 @@ const UserController = {
     },
     postReportDisease: async (req, res, next) => {
         const token = jwt_decode.decodeToken(req.headers['authorization']);
-        let user = await Accounts.findById(token._id);
-        let data = {
-            email: user.email,
-            phone: user.phone,
-            desc: req.body.desc,
-            isComplete: '1'
+        if (!token) {
+            let data = {
+                email: req.body.email ? req.body.email : '',
+                phone: req.body.phone ? req.body.phone : '',
+                desc: req.body.desc,
+                isComplete: '1'
+            }
+            let center = await Centers.findById(req.body.center);
+            await Centers.findByIdAndUpdate(req.body.center, { $push: { reportDisease: data } }, { new: true }).then(center => {
+                return res.status(200).json({ msg: 'Báo Cáo Dịch Bệnh Thành Công !', desc: `Cảm ơn ${data.email ? data.email : data.phone} đã báo cáo dịch bệnh. Thông tin đã được gửi đến trung tâm, vui lòng chờ phản hồi` })
+            }).catch(err => {
+                return res.status(500).json({ msg: 'Có lỗi xảy ra' })
+            })
+        } else {
+            let user = await Accounts.findById(token._id);
+            let data = {
+                email: user.email,
+                phone: user.phone,
+                desc: req.body.desc,
+                isComplete: '1'
+            }
+            let center = await Centers.findById(req.body.center);
+            await Centers.findByIdAndUpdate(req.body.center, { $push: { reportDisease: data } }, { new: true }).then(center => {
+                return res.status(200).json({ msg: 'Báo Cáo Dịch Bệnh Thành Công !', desc: `Cảm ơn ${data.email} đã báo cáo dịch bệnh. Thông tin đã được gửi đến trung tâm, vui lòng chờ phản hồi` })
+            }).catch(err => {
+                return res.status(500).json({ msg: 'Có lỗi xảy ra' })
+            })
         }
-        let center = await Centers.findById(req.body.center);
-        await Centers.findByIdAndUpdate(req.body.center, { $push: { reportDisease: data } }, { new: true }).then(center => {
-            return res.status(200).json({ msg: 'Báo Cáo Dịch Bệnh Thành Công !', desc: `Cảm ơn ${data.email} đã báo cáo dịch bệnh. Thông tin đã được gửi đến trung tâm, vui lòng chờ phản hồi` })
-        }).catch(err => {
-            return res.status(500).json({ msg: 'Có lỗi xảy ra' })
-        })
     }
 }
 module.exports = UserController
