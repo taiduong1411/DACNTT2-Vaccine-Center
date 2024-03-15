@@ -14,7 +14,7 @@ router.get('/search-vaccine/:key', adminRole, AdminController.getSearchVaccine);
 router.post('/add-product', adminRole, AdminController.addVaccine);
 router.post('/update-detail/:context/:pro_code', adminRole, AdminController.updateDetailByCode);
 router.post('/update-product/:_id', adminRole, AdminController.updateVaccineById);
-router.delete('/del-product/:_id', adminRole, AdminController.delVaccine);
+router.delete('/del-vaccine/:_id', adminRole, AdminController.delVaccine);
 // doctor
 router.get('/all-doctors', adminRole, AdminController.getAllDoctors);
 router.get('/search-doctor/:key', adminRole, AdminController.getSearchDoctor);

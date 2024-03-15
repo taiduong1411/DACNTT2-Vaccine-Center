@@ -23,6 +23,10 @@ import VaccineDetail from './pages/Vaccine/VaccineDetail';
 import BlogDetail from './pages/Blog/BlogDetail';
 import VaccineDetailAdmin from './pages/Admin/VaccineManager/VaccineDetail/VaccineDetail';
 import DiseaseManager from './pages/Admin/DiseaseManager/DiseaseManager';
+import VaccineManager from './pages/Doctor/Vaccine/VaccineManager';
+import VaccineDetailDoctor from './pages/Doctor/Vaccine/VaccineDetail/VaccineDetail';
+import BlogManagerDoctor from './pages/Doctor/BlogManager/BlogManager';
+import DiseaseManagerDoctor from './pages/Doctor/DiseaseManager/DiseaseManager';
 function App() {
   return (
     <>
@@ -39,6 +43,11 @@ function App() {
           <Route exact path='/' element={<DoctorRoute />}>
             <Route path="/doctor/dashboard" element={<Doctor />} />
             <Route path="/doctor/vaccine-schedule" element={<CalendarVaccine />} />
+            <Route path="/doctor/vaccine-manager" element={<VaccineManager />} />
+            <Route path='/doctor/vaccine-manager/vaccine-detail/:slug/:pro_code' element={<VaccineDetailDoctor />} />
+            <Route path='/doctor/blog-manager' element={<BlogManagerDoctor />} />
+            <Route path='/doctor/disease-manager' element={<DiseaseManagerDoctor />} />
+
           </Route>
           <Route exact path='/' element={<AdminRoute />}>
             <Route path="/admin/dashboard" element={<Dashboard />} />

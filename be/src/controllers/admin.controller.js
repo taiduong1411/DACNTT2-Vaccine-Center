@@ -7,8 +7,6 @@ const Blogs = require('../models/blog.model');
 const bcrypt = require('bcrypt');
 const slugify = require('slugify');
 const jwt_decode = require('../services/tokenDecode');
-// config connect socket
-const io = require('../services/socket');
 const AdminController = {
     getAllVaccines: async (req, res, next) => {
         await Vaccines.find().lean().sort({ createdAt: -1 }).then(async vaccines => {
@@ -33,21 +31,20 @@ const AdminController = {
         })
     },
     addVaccine: async (req, res, next) => {
-
-        // await Vaccine.findOne({ pro_code: req.body.pro_code }).then(async vaccine => {
-        //     if (vaccine) return res.status(300).json({ msg: 'Vaccin Đã Tồn Tại' });
-        // })
-        const data = {
-            pro_name: req.body.pro_name,
-            pro_code: req.body.pro_code,
-            desc: req.body.desc,
-            img: req.body.img,
-            cover: req.body.cover,
-            centerOf: req.body.centerOf
+        try {
+            const data = {
+                pro_name: req.body.pro_name,
+                pro_code: req.body.pro_code,
+                desc: req.body.desc,
+                img: req.body.img,
+                cover: req.body.cover,
+                centerOf: req.body.centerOf
+            }
+            await Vaccines(data).save();
+            return res.status(200).json({ msg: 'Thêm Vaccin Thành Công' });
+        } catch (error) {
+            return res.status(500).json({ msg: 'Có lỗi xảy ra' })
         }
-        // console.log(data);
-        await Vaccines(data).save();
-        return res.status(200).json({ msg: 'Thêm Vaccin Thành Công' });
     },
     delVaccine: async (req, res, next) => {
         const _id = req.params._id;
@@ -430,12 +427,19 @@ const AdminController = {
     getAllBlogs: async (req, res, next) => {
         try {
             let blogs = await Blogs.find().lean().sort({ createdAt: -1 });
-            blogs = blogs.map(blog => {
-                return {
-                    ...blog,
-                    createdAt: (blog.createdAt).toLocaleDateString('en-GB'),
-                }
-            })
+            const getNameAuthor = async (id) => {
+                const account = await Accounts.findById(id);
+                return account.fullname
+            }
+            blogs = await Promise.all(
+                blogs.map(async blog => {
+                    return {
+                        ...blog,
+                        author: await getNameAuthor(blog.author),
+                        createdAt: (blog.createdAt).toLocaleDateString('en-GB'),
+                    }
+                })
+            )
             return res.status(200).json(blogs);
         } catch (error) {
             console.log(error);
@@ -445,13 +449,13 @@ const AdminController = {
     addBlog: async (req, res, next) => {
         try {
             await Blogs.findOne({ title: req.body.title }).then(async blog => {
-                if (blog) return res.status(300).json({ msg: 'Tiêu Đề Đã Tồn Tại' })
-                const token = jwt_decode.decodeToken(req.headers['authorization'])
-                let nameAuthor = await Accounts.findOne({ _id: token._id });
+                if (blog) return res.status(300).json({ msg: 'Tiêu Đề Đã Tồn Tại' });
+                const token = jwt_decode.decodeToken(req.headers['authorization']);
+                // let nameAuthor = await Accounts.findOne({ _id: token._id });
                 const data = {
                     ...req.body,
-                    author: nameAuthor.fullname ? nameAuthor.fullname : nameAuthor.email,
-
+                    // author: nameAuthor.fullname ? nameAuthor.fullname : nameAuthor.email,
+                    author: token._id
                 }
                 await Blogs(data).save();
                 return res.status(200).json({ msg: 'Tạo Mới Blog Thành Công' });

@@ -5,7 +5,7 @@ import { LogoutOutlined, CalendarOutlined, VideoCameraOutlined } from '@ant-desi
 function Sidebar({ props }) {
     return (
         <div>
-            <Layout style={{ height: '700px' }}>
+            <Layout style={{ height: '100%', minHeight: '700px' }}>
                 <Sider
                     breakpoint="lg"
                     collapsedWidth="0"
@@ -36,12 +36,26 @@ function Sidebar({ props }) {
                             {
                                 key: '3',
                                 icon: <VideoCameraOutlined />,
-                                label: <Link to="/vaccine-manager" rel="noopener noreferrer">
+                                label: <Link to="/doctor/vaccine-manager" rel="noopener noreferrer">
                                     Quản Lý Vaccine
                                 </Link>,
                             },
                             {
                                 key: '4',
+                                icon: <VideoCameraOutlined />,
+                                label: <Link to="/doctor/blog-manager" rel="noopener noreferrer">
+                                    Quản Lý Blog
+                                </Link>,
+                            },
+                            {
+                                key: '5',
+                                icon: <VideoCameraOutlined />,
+                                label: <Link to="/doctor/disease-manager" rel="noopener noreferrer">
+                                    Phân Công Xử Lý Dịch Bệnh
+                                </Link>,
+                            },
+                            {
+                                key: '6',
                                 icon: <LogoutOutlined />,
                                 label: <Link to="/login" rel="noopener noreferrer">
                                     Logout
