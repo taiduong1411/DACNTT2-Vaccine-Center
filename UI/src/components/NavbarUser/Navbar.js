@@ -224,7 +224,7 @@ function Navbar({ props }) {
             <div className="w-full h-22 bg-gray-100">
                 <div className='w-40 px-3 py-3 inline-block'>
                     <Link to="/home">
-                        <img src="/logo.png" alt="logo" width={150} height={50} />
+                        <img src="/main-logo.png" alt="logo" width={60} height={60} />
                     </Link>
                 </div>
                 {login

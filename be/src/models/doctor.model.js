@@ -14,14 +14,15 @@ const DoctorModel = new Schema({
     certificates: {
         type: [String]
     },
-    vac_schedule: {
-        type: {
-            uid: String,
-            vid: String,
-            cid: String,
-            date: String,
-        }
-    },
+    // vac_schedule: {
+    //     type: {
+    //         uid: String,
+    //         vid: String,
+    //         cid: String,
+    //         date: String,
+    //         _id: String
+    //     }
+    // },
     assignDisease: {
         type: [{
             desc: String,

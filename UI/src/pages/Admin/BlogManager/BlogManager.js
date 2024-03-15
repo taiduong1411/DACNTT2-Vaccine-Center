@@ -213,19 +213,51 @@ const BlogManager = () => {
     // Update
     const [updateOpen, setUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState([]);
-
-
+    const [isChecked, setIsChecked] = useState(false);
+    const [idUpdate, setIdUpdate] = useState();
     const showUpdateOpen = async (event) => {
         setUpdateOpen(true);
         const id = event.currentTarget.dataset.id;
+        setIdUpdate(id);
         await axiosCli().get(`admin/blog-by-id/${id}`).then(async res => {
             setDataUpdate(res.data);
             setHashtags(res.data.hashtags);
+            setIsChecked(res.data.status);
         })
     }
-    const onChange = (checked) => {
-        console.log(`switch to ${checked}`);
+    const onChange = () => {
+        setIsChecked(!isChecked);
     };
+    const onUpdateSubmit = async (data) => {
+        const url = await upload(file, 'DACNTT2/blog');
+
+
+        const allDataUpdate = {
+            title: data['title'] ? data['title'] : dataUpdate.title,
+            sub_content: data['sub_content'] ? data['sub_content'] : dataUpdate.sub_content,
+            cover: url ? url : dataUpdate.cover,
+            content: data['content'] ? data['content'] : dataUpdate.content,
+            status: isChecked,
+            hashtags: hashtags ? hashtags : dataUpdate.hashtags,
+            author: dataUpdate.author,
+        }
+
+        await axiosCli().post(`admin/update-blog/${idUpdate}`, allDataUpdate).then(res => {
+            if (res.status == 200) {
+                messageApi.open({
+                    type: 'success',
+                    content: res.data.msg
+                });
+                setUpdateOpen(false);
+                getDataBlog();
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: res.data.msg
+                });
+            }
+        })
+    }
 
 
     return (
@@ -332,7 +364,7 @@ const BlogManager = () => {
                 </div>
             </Modal>
             <Modal open={updateOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={() => setUpdateOpen(false)}>
-                <form onSubmit={handleSubmit(onAddSubmit)}>
+                <form onSubmit={handleSubmit(onUpdateSubmit)}>
                     <div className="mb-4">
                         <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tiêu Đề Chính</label>
                         <input type="text" {...register('title')} defaultValue={dataUpdate.title} placeholder="Tiêu Đề Chính" name="title" id="title" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
@@ -393,18 +425,18 @@ const BlogManager = () => {
                         ?
                         <div>
                             <h3>Preview:</h3>
-                            <div dangerouslySetInnerHTML={{ __html: content }} />
+                            <div dangerouslySetInnerHTML={{ __html: dataUpdate.content }} />
                         </div>
                         :
                         ''
                     }
                     <div className="mt-5">
-                        <div>Trạng Thái:</div>
-                        <Switch checked={dataUpdate.status} onChange={onChange} />
+                        <div>Trạng Thái: {isChecked === true ? <strong>Công Khai</strong> : <strong>Tạm Ẩn</strong>}</div>
+                        <Switch checked={isChecked} onChange={onChange} />
                         &nbsp;
                     </div>
 
-                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Submit</button>
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Gửi</button>
                 </form>
             </Modal>
         </div>

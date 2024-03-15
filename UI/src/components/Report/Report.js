@@ -6,7 +6,7 @@ function Report({ props }) {
     // Handle Report 
     const { register, handleSubmit } = useForm();
     const [openRe, setOpenRe] = useState(false);
-    // const [messageApi, contextHolder] = message.useMessage();
+    const [errMsg, setErrMsg] = useState('');
     // Check Login
     const [isLogin, setIsLogin] = useState(false)
     const checkLogin = () => {
@@ -24,14 +24,18 @@ function Report({ props }) {
     }
 
     const onReportSubmit = async (data) => {
-        await axiosCli().post('user/report-disease', data).then(res => {
-            api.open({
-                message: res.data.msg,
-                description: res.data.desc,
-                duration: 4,
-            });
-            setOpenRe(false)
-        })
+        if (data['center'] == 'null') {
+            setErrMsg('Vui lòng chọn Trạm y tế gần nhất')
+        } else {
+            await axiosCli().post('user/report-disease', data).then(res => {
+                api.open({
+                    message: res.data.msg,
+                    description: res.data.desc,
+                    duration: 4,
+                });
+                setOpenRe(false)
+            })
+        }
 
     }
     return (
@@ -69,6 +73,7 @@ function Report({ props }) {
                                 <option value={data._id} key={index}>{data.center_name}</option>
                             ))}
                         </select>
+                        <p className='ml-2 text-xs text-red-600 mt-3'>{errMsg}</p>
                     </div>
                     <div className="mb-4">
                         <label htmlFor="desc" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Mô Tả</label>

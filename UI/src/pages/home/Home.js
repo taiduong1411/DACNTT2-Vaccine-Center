@@ -33,16 +33,16 @@ function Home() {
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            getData();
+            getDataAllVaccine();
             getDataBlog();
-            getDataCenter();
         }, 3000);
+        getDataCenter();
         getDataUser();
         showLoader();
         // Đảm bảo rằng bạn xóa bỏ setInterval khi component unmount để tránh rò rỉ bộ nhớ
         return () => clearInterval(intervalId);
     }, []);
-    const getData = async () => {
+    const getDataAllVaccine = async () => {
         await axiosCli().get('user/all-data-vaccine').then(res => {
             setData(res.data);
         })
@@ -134,7 +134,7 @@ function Home() {
                 <SliderIntro />
             </div>
             <div className="mt-1">
-                <img className="w-full" src="https://img.gotit.vn/compress/brand/images/1684830079_Btugb.png" alt="" />
+                <img className="w-full" src="/banner.jpeg" alt="" />
             </div>
             <div className="grid grid-cols-2 m-auto mt-5 max-[1200px]:grid-cols-1" style={{ width: '95%' }}>
                 <div className="max-[1200px]: w-full">
@@ -143,7 +143,7 @@ function Home() {
                 <div className="">
                     <div className="h-full shadow-md max-[1200px]:w-full max-[1200px]:mr-6 max-[1200px]:mt-10" ref={ref}>
                         <div className="p-12" style={{ marginTop: 'auto' }}>
-                            <p className="text-center text-2xl font-bold">Đặt Lịch Nhanh</p>
+                            <p className="text-center text-2xl font-bold">Đặt Lịch Ngay</p>
                             <form onSubmit={handleSubmit(onSubmit)} >
                                 <div className="mb-4">
                                     <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900 ">Họ Và Tên</label>

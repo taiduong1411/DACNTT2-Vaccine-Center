@@ -20,16 +20,20 @@ router.get('/all-doctors', adminRole, AdminController.getAllDoctors);
 router.get('/search-doctor/:key', adminRole, AdminController.getSearchDoctor);
 router.post('/add-doctor', adminRole, AdminController.addDoctor);
 router.get('/getDataDoctorByIdCenter/:cid', adminRole, AdminController.getDoctorByIdCenter);
+router.get('/get-data-doctor-by-id/:id', adminRole, AdminController.getDoctorById);
+router.post('/update-doctor/:id', adminRole, AdminController.updateDoctor);
 // center
 router.get('/all-centers', adminRole, AdminController.allCenters);
 router.post('/add-center', adminRole, AdminController.addCenter);
+router.get('/get-data-center-by-id/:id', adminRole, AdminController.getDataCenterById);
+router.post('/update-center/:id', adminRole, AdminController.updatedCenter);
 // blog
 router.get('/all-blogs', adminRole, AdminController.getAllBlogs);
 router.post('/add-blog', adminRole, AdminController.addBlog);
 router.delete('/del-blog/:_id', adminRole, AdminController.delBlog);
 router.get('/search-blog/:key', adminRole, AdminController.searchBlog);
 router.get('/blog-by-id/:id', adminRole, AdminController.getBlogById);
-
+router.post('/update-blog/:id', adminRole, AdminController.updateBlog);
 // disease
 router.get('/data-disease', adminRole, AdminController.getDataDisease);
 router.delete('/delete-report/:_id/:cid', adminRole, AdminController.delReport);

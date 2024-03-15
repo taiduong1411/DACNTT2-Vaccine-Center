@@ -16,10 +16,6 @@ const CenterModel = new Schema({
         },
         required: true
     },
-    status: {
-        type: Boolean,
-        default: true
-    },
     reportDisease: {
         type: [{
             email: String,

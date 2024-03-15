@@ -1,10 +1,9 @@
 import Navbar from "../../../components/Sidebar/Doctor/navbar";
 import Sidebar from "../../../components/Sidebar/Admin/sidebar";
-import { Layout, Button, Table, Space, Modal, message, Badge } from 'antd';
+import { Layout, Button, Table, Space, Modal, message, } from 'antd';
 const { Content } = Layout;
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import axios from 'axios';
 import { axiosCli } from "../../../interceptor/axios";
 const CenterManager = () => {
     const columns = [
@@ -20,29 +19,12 @@ const CenterManager = () => {
                 return <div>{record.address.number}, {record.address.street}, {record.address.district}, {record.address.province}</div>;
             }
         },
-        // {
-        //     title: 'Trạng Thái',
-        //     key: 'status',
-        //     render: (record) => {
-        //         if (record.status == true) {
-        //             return <Badge status="success" text='Hoạt động' />
-        //         } else {
-        //             return <Badge status="error" text='Đang bị khoá' />
-        //         }
-        //     }
-        // },
-        // {
-        //     title: 'Ngày tạo',
-        //     dataIndex: 'createdAt',
-        //     key: 'createdAt'
-        // },
         {
             title: 'Action',
             key: 'Action',
             render: (record) => (
                 <Space size="middle">
-                    <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record._id} data-name={record.pro_name} data-code={record.pro_code} data-cover={record.cover} >Tạm Ngưng Tài Khoản</Button>
-                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} >Update</Button>
+                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} onClick={showUpdate} >Update</Button>
                 </Space>
             ),
         },
@@ -62,8 +44,6 @@ const CenterManager = () => {
     };
     const { register, handleSubmit } = useForm();
     const [addOpen, setAddOpen] = useState(false);
-    const [provinceData, setProvinceData] = useState([]);
-    const [districtData, setDistrictData] = useState([]);
     const [dataCenter, setDataCenter] = useState([]);
     useEffect(() => {
         getDataCenter();
@@ -77,24 +57,11 @@ const CenterManager = () => {
         })
     }
     const showAdd = async () => {
-        const res = await axios.get('https://provinces.open-api.vn/api/?depth=2');
-        const provinces = (res.data).map(province => {
-            return {
-                name: province.name,
-                districts: {
-                    name: (province.districts).map(e => e.name)
-                }
-            }
-        });
-        setProvinceData(provinces);
         setAddOpen(true)
     }
-    const handleDistrict = (e) => {
-        const districts = provinceData.filter(f => f.name == e.target.value)
-        // console.log(districts[0].districts);
-        setDistrictData(districts[0].districts.name);
-    }
+
     const onAddSubmit = async (data) => {
+
         await axiosCli().post('admin/add-center', data).then(res => {
             if (res.status == 200) {
                 success(res.data.msg);
@@ -102,6 +69,42 @@ const CenterManager = () => {
                 setAddOpen(false);
             } else {
                 error(res.data.msg)
+            }
+        })
+    }
+    // update
+    const [idUpdate, setIdUpdate] = useState(null);
+    const [updateOpen, setUpdateOpen] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState([]);
+    const showUpdate = async (e) => {
+        setUpdateOpen(true);
+        const id = e.currentTarget.dataset.id;
+        setIdUpdate(id);
+        await axiosCli().get(`admin/get-data-center-by-id/${id}`).then(res => {
+            setDataUpdate(res.data);
+        })
+    }
+    const onUpdateSubmit = async (data) => {
+        const allData = {
+            center_name: data['center_name'] ? data['center_name'] : dataUpdate.center_name,
+            number: data['number'] ? data['number'] : dataUpdate.address.number,
+            street_name: data['street_name'] ? data['street_name'] : dataUpdate.address.street,
+            province: data['province'] ? data['province'] : dataUpdate.address.province,
+            district: data['district'] ? data['district'] : dataUpdate.address.district
+        }
+        await axiosCli().post(`admin/update-center/${idUpdate}`, allData).then(res => {
+            if (res.status == 200) {
+                messageApi.open({
+                    type: 'success',
+                    content: res.data.msg
+                })
+                getDataCenter();
+                setUpdateOpen(false);
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: res.data.msg
+                })
             }
         })
     }
@@ -124,7 +127,7 @@ const CenterManager = () => {
                     </Content>
                 </Layout>
             </div>
-            <Modal open={addOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} onCancel={() => setAddOpen(false)}>
+            <Modal open={addOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={() => setAddOpen(false)}>
                 <form onSubmit={handleSubmit(onAddSubmit)}>
                     <div className="mb-4">
                         <label htmlFor="Tên Trung Tâm" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Trung Tâm</label>
@@ -139,42 +142,44 @@ const CenterManager = () => {
                         <input type="text" {...register('street_name')} placeholder="Tên Đường" name="street_name" id="street_name" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="province" className=" block mb-2 text-sm font-medium text-gray-900 dark:text-black">Thuộc Tỉnh</label>
-                        <select name="province" {...register('province')} id="province" onChange={handleDistrict}>
-                            <option value="null">Chọn Tỉnh Thành</option>
-                            {provinceData?.map((province, index) => (
-                                <option value={province.name} key={index}>{province.name}</option>
-                            ))}
-                        </select>
+                        <label htmlFor="Tỉnh Thành" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Tỉnh Thành</label>
+                        <input type="text" {...register('province')} placeholder="Tên Đường" name="province" id="province" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="district" className=" block mb-2 text-sm font-medium text-gray-900 dark:text-black">Thuộc Quận/Huyện</label>
-                        <select name="district" {...register('district')} id="district">
-                            <option value="null">Chọn Quận/Huyện</option>
-                            {districtData?.map((distr, index) => (
-                                <option value={distr} key={index}>{distr}</option>
-                            ))}
-                        </select>
+                        <label htmlFor="Quận" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Quận</label>
+                        <input type="text" {...register('district')} placeholder="Tên Quận" name="district" id="district" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
                     </div>
-                    {/* <div>
-                        <label htmlFor="avatar" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Ảnh Vaccine</label>
-                        <input type="file" multiple onChange={(e) => setFiles(e.target.files)} />
-                    </div> */}
-                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Submit</button>
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Tạo Trung Tâm</button>
                 </form>
 
             </Modal>
-            {/* <Modal title='Xoá Trung Tâm' open={delOpen} onOk={handleDel} okButtonProps={{ style: { backgroundColor: 'red' } }} onCancel={handleCancel}>
-                <div>
-                    Sản Phẩm
-                    <p className="mt-3 mb-3">
-                        <Avatar src={dataDel.cover} className="mr-4" />
-                        <strong>[{dataDel.pro_code}]</strong>
-                        {dataDel.pro_name}
-                    </p>
-                    Sẽ bị xoá và không thể khôi phục
-                </div>
-            </Modal> */}
+            <Modal open={updateOpen} width={1000} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={() => setUpdateOpen(false)}>
+                <form onSubmit={handleSubmit(onUpdateSubmit)}>
+                    <div className="mb-4">
+                        <label htmlFor="Tên Trung Tâm" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Trung Tâm</label>
+                        <input type="text" {...register('center_name')} defaultValue={dataUpdate.center_name} placeholder="Tên Trung Tâm" name="center_name" id="center_name" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="Số Nhà" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Số Nhà</label>
+                        <input type="text" {...register('number')} defaultValue={dataUpdate?.address?.number} placeholder="Số Nhà" name="number" id="number" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="Tên Đường" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Đường</label>
+                        <input type="text" {...register('street_name')} defaultValue={dataUpdate?.address?.street} placeholder="Tên Đường" name="street_name" id="street_name" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="Tỉnh Thành" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Tỉnh Thành</label>
+                        <input type="text" {...register('province')} defaultValue={dataUpdate?.address?.province} placeholder="Tên Đường" name="province" id="province" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
+                    </div>
+                    <div className="mb-4">
+                        <label htmlFor="Quận" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Quận</label>
+                        <input type="text" {...register('district')} defaultValue={dataUpdate?.address?.district} placeholder="Tên Quận" name="district" id="district" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
+                    </div>
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Tạo Trung Tâm</button>
+                </form>
+
+            </Modal>
+
         </div>
     )
 }

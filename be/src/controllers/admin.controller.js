@@ -222,6 +222,32 @@ const AdminController = {
             return res.status(500).json({ msg: 'Server Error' });
         }
     },
+    getDataCenterById: async (req, res, next) => {
+        await Centers.findById(req.params.id).then(center => {
+            return res.status(200).json(center)
+        }).catch(err => {
+            return res.status(500).json({ msg: 'err' })
+        })
+    },
+    updatedCenter: async (req, res, next) => {
+        const center = await Centers.findById(req.params.id);
+        const data = {
+            center_name: req.body.center_name,
+            address: {
+                street: req.body.street_name,
+                district: req.body.district,
+                province: req.body.province,
+                number: req.body.number
+            },
+            reportDisease: center.reportDisease
+        }
+        await Centers.findByIdAndUpdate(req.params.id, data).then(center => {
+            return res.status(200).json({ msg: 'Cập nhật thành công' })
+        }).catch(err => {
+            console.log(err);
+            return res.status(500).json({ msg: 'Cập nhật thất bại' })
+        })
+    },
     // DocTor
     getAllDoctors: async (req, res, next) => {
         const getCenterName = async (email) => {
@@ -335,8 +361,18 @@ const AdminController = {
         })
     },
     getDoctorByIdCenter: async (req, res, next) => {
-        let doctors = await Doctors.find().lean()
-        doctors = doctors.filter(e => e.centerOf == req.params.cid);
+        let doctors = await Doctors.find().lean();
+        let activeDoctor = [];
+        for (var i = 0; i < doctors.length; i++) {
+            let account = await Accounts.findOne({ email: doctors[i].email })
+            if (account.status == true) {
+                activeDoctor.push(doctors[i])
+            } else {
+                continue
+            }
+        }
+
+        doctors = activeDoctor.filter(e => e.centerOf == req.params.cid);
         const getNameByEmail = async (email) => {
             let account = await Accounts.findOne({ email: email });
             return account.fullname
@@ -350,6 +386,45 @@ const AdminController = {
             })
         )
         return res.status(200).json(doctors);
+    },
+    getDoctorById: async (req, res, next) => {
+        const account = await Accounts.findById(req.params.id);
+        let doctor = await Doctors.findOne({ email: account.email })
+        const dataDoctor = {
+            _id: account._id,
+            email: account.email,
+            fullname: account.fullname,
+            phone: account.phone,
+            dob: account.dob,
+            centerOf: doctor.centerOf,
+            certificates: doctor.certificates,
+            status: account.status
+        }
+        return res.status(200).json(dataDoctor)
+    },
+    updateDoctor: async (req, res, next) => {
+        try {
+            const account = await Accounts.findById(req.params.id);
+            const doctor = await Doctors.findOne({ email: account.email });
+            const dataUpdateAccount = {
+                fullname: req.body.fullname,
+                phone: req.body.phone,
+                dob: req.body.dob,
+                status: req.body.status
+            }
+            const dataUpdateDoctor = {
+                certificates: req.body.certificates,
+                centerOf: req.body.centerOf,
+                assignDisease: doctor.assignDisease
+            }
+
+            await Accounts.findByIdAndUpdate(req.params.id, dataUpdateAccount);
+            await Doctors.findByIdAndUpdate(doctor._id, dataUpdateDoctor);
+            return res.status(200).json({ msg: 'Cập nhật thành công' });
+        } catch (error) {
+            return res.status(500).json({ msg: 'Có lỗi xảy ra' });
+        }
+
     },
     // Blog
     getAllBlogs: async (req, res, next) => {
@@ -424,6 +499,19 @@ const AdminController = {
     getBlogById: async (req, res, next) => {
         await Blogs.findById(req.params.id).then(blog => {
             return res.status(200).json(blog)
+        })
+    },
+    updateBlog: async (req, res, next) => {
+        const data = {
+            ...req.body,
+            slug: slugify(req.body.title, {
+                lower: true,
+            })
+        }
+        await Blogs.findByIdAndUpdate(req.params.id, data).then(blog => {
+            return res.status(200).json({ msg: 'Cập nhật thành công' })
+        }).catch(err => {
+            return res.status(500).json({ msg: 'error' })
         })
     },
     // disease
