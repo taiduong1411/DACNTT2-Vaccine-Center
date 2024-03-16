@@ -497,5 +497,69 @@ const DoctorController = {
         }
         return res.status(200).json(data)
     },
+    delReport: async (req, res, next) => {
+        const reportId = req.params._id; // ID của report cần xoá
+        const token = jwt_decode.decodeToken(req.headers['authorization']);
+        const account = await Accounts.findById(token._id);
+        const doctor = await Doctors.findOne({ email: account.email });
+        const center = await Centers.findById(doctor.centerOf);
+
+        // Tìm và cập nhật trạng thái của báo cáo có id tương ứng
+        doctor.assignDisease = doctor.assignDisease.map((disease) => {
+            if (disease.diseaseId === reportId) {
+                // Nếu diseaseId trùng khớp, cập nhật trạng thái của báo cáo
+                return {
+                    ...disease,
+                    status: '2'
+                };
+            }
+            return disease; // Trả về các báo cáo không cần chỉnh sửa
+        });
+        center.reportDisease = center.reportDisease.map((disease) => {
+            if ((disease._id).toString() === reportId) {
+                // Nếu diseaseId trùng khớp, cập nhật trạng thái của báo cáo
+                return {
+                    ...disease,
+                    isComplete: '3'
+                };
+            }
+            return disease; // Trả về các báo cáo không cần chỉnh sửa
+        });
+
+        await Doctors.findByIdAndUpdate(doctor._id, doctor)
+        await Centers.findByIdAndUpdate(center._id, center)
+        return res.status(200).json({ msg: 'Từ chối tiếp nhận thành công' })
+    },
+    acceptReport: async (req, res, next) => {
+        const reportId = req.params._id; // ID của report cần xoá
+        const token = jwt_decode.decodeToken(req.headers['authorization']);
+        const account = await Accounts.findById(token._id);
+        const doctor = await Doctors.findOne({ email: account.email });
+        const center = await Centers.findById(doctor.centerOf)
+        // Tìm và cập nhật trạng thái của báo cáo có id tương ứng
+        doctor.assignDisease = doctor.assignDisease.map((disease) => {
+            if (disease.diseaseId === reportId) {
+                // Nếu diseaseId trùng khớp, cập nhật trạng thái của báo cáo
+                return {
+                    ...disease,
+                    status: '3'
+                };
+            }
+            return disease; // Trả về các báo cáo không cần chỉnh sửa
+        });
+        center.reportDisease = center.reportDisease.map((disease) => {
+            if ((disease._id).toString() === reportId) {
+                // Nếu diseaseId trùng khớp, cập nhật trạng thái của báo cáo
+                return {
+                    ...disease,
+                    isComplete: '4'
+                };
+            }
+            return disease; // Trả về các báo cáo không cần chỉnh sửa
+        });
+        await Doctors.findByIdAndUpdate(doctor._id, doctor)
+        await Centers.findByIdAndUpdate(center._id, center)
+        return res.status(200).json({ msg: 'Tiếp nhận thành công' })
+    }
 }
 module.exports = DoctorController;

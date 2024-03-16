@@ -592,7 +592,10 @@ const AdminController = {
                 diseaseId: req.body.diseaseId,
                 desc: req.body.desc,
                 note: req.body.note,
-                status: false
+                status: '1'
+                // 1 = cho tiep nhan
+                // 2 = tu choi tiep nhan
+                // 3 = tiep nhan
             }
 
             const updatedDoctor = await Doctors.findByIdAndUpdate(doctor._id, { $push: { assignDisease: data } }, { new: true });

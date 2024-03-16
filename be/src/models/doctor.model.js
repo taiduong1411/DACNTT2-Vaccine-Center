@@ -27,7 +27,7 @@ const DoctorModel = new Schema({
         type: [{
             desc: String,
             note: String,
-            status: Boolean,
+            status: String,
             diseaseId: String
         }]
     }

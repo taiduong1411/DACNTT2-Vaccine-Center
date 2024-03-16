@@ -34,15 +34,19 @@ function DiseaseManager() {
             render: (record) => {
                 if (record.isComplete == '1') {
                     return <div>
-                        <Badge status="error" text='Chưa xử lý' />
+                        <Badge status="warning" text='Chưa phân công' />
                     </div>
                 } else if (record.isComplete == '2') {
                     return <div>
-                        <Badge status="warning" text='Chờ xử lý' />
+                        <Badge status="warning" text='Chờ tiếp nhận' />
+                    </div>
+                } else if (record.isComplete == '3') {
+                    return <div>
+                        <Badge status="error" text='Đã từ chối' />
                     </div>
                 } else {
                     return <div>
-                        <Badge status="success" text='Đã xử lý' />
+                        <Badge status="success" text='Đã tiếp nhận' />
                     </div>
                 }
             }

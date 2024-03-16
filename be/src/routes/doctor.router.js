@@ -31,6 +31,10 @@ router.get('/blog-by-id/:id', doctorRole, DoctorController.getBlogById);
 router.post('/update-blog/:id', doctorRole, DoctorController.updateBlog);
 // disease
 router.get('/data-disease', doctorRole, DoctorController.getDataDisease);
+router.delete('/delete-report/:_id', doctorRole, DoctorController.delReport);
+router.get('/accept-report/:_id', doctorRole, DoctorController.acceptReport);
+
+
 
 
 

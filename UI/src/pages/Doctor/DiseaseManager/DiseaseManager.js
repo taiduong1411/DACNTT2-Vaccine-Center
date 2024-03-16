@@ -32,14 +32,18 @@ function DiseaseManagerDoctor() {
             title: 'Tình Trạng',
             key: 'isComplete',
             render: (record) => {
-                if (record.status == true) {
+                if (record.status == '1') {
                     return <div>
-                        <Badge status="success" text='Đã tiếp nhận' />
+                        <Badge status="warning" text='Chờ tiếp nhận' />
                     </div>
                 }
-                else {
+                else if (record.status == '2') {
                     return <div>
-                        <Badge status="error" text='Chờ tiếp nhận' />
+                        <Badge status="error" text='Từ chối tiếp nhận' />
+                    </div>
+                } else {
+                    return <div>
+                        <Badge status="success" text='Đã tiếp nhận' />
                     </div>
                 }
             }
@@ -47,12 +51,18 @@ function DiseaseManagerDoctor() {
             title: 'Phân Công',
             key: 'Action',
             render: (record) => {
-                return <>
-                    <Space size="middle">
-                        <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record.diseaseId} data-cid={record.centerId} onClick={showDel}>Từ Chối</Button>
-                        <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} data-desc={record.desc} data-cid={record.centerId} onClick={showAssign} >Tiếp Nhận</Button>
-                    </Space>
-                </>
+                if (record.status == 1) {
+                    return <>
+                        <Space size="middle">
+                            <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record.diseaseId} data-cid={record.centerId} onClick={showDel}>Từ Chối</Button>
+                            <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record.diseaseId} data-desc={record.desc} data-cid={record.centerId} onClick={showAccept} >Tiếp Nhận</Button>
+                        </Space>
+                    </>
+                } else {
+                    return (
+                        <div></div>
+                    )
+                }
             }
         }
 
@@ -83,31 +93,64 @@ function DiseaseManagerDoctor() {
         setOpenDel(!openDel);
         const data = {
             id: event.currentTarget.dataset.id,
-            cid: event.currentTarget.dataset.cid
         }
         setDataId(data);
-        console.log(data);
     }
     const handelOk = async () => {
         setOpenDel(false);
-        deleteById(dataId.id, dataId.cid);
+        deleteById(dataId.id);
     }
-    const deleteById = async (_id, cid) => {
-        // await axiosCli().del(`admin/delete-report/${_id}/${cid}`).then(res => {
-        //     if (res.status == 200) {
-        //         messageApi.open({
-        //             type: 'success',
-        //             content: res.data.msg
-        //         })
-        //         getDataDisease();
-        //     } else {
-        //         messageApi.open({
-        //             type: 'error',
-        //             content: res.data.msg
-        //         })
-        //     }
-        // })
+    const deleteById = async (_id) => {
+        await axiosCli().del(`doctor/delete-report/${_id}`).then(res => {
+            if (res.status == 200) {
+                messageApi.open({
+                    type: 'success',
+                    content: res.data.msg
+                })
+                getDataDisease();
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: res.data.msg
+                })
+            }
+        })
     }
+
+
+    //    accept
+    const [openAccept, setOpenAccept] = useState(false);
+    const [dataAcptId, setDataAcptId] = useState([]);
+    const showAccept = (event) => {
+        setOpenAccept(!openDel);
+        const data = {
+            id: event.currentTarget.dataset.id,
+        }
+        setDataAcptId(data);
+        console.log(data);
+    }
+    const handelAcptOk = async () => {
+        setOpenAccept(false);
+        acptById(dataAcptId.id);
+    }
+    const acptById = async (_id) => {
+        await axiosCli().get(`doctor/accept-report/${_id}`).then(res => {
+            if (res.status == 200) {
+                messageApi.open({
+                    type: 'success',
+                    content: res.data.msg
+                })
+                getDataDisease();
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: res.data.msg
+                })
+            }
+        })
+    }
+
+
     // Search
     const { register, handleSubmit } = useForm();
     const onSearchSubmit = async (data) => {
@@ -133,52 +176,7 @@ function DiseaseManagerDoctor() {
             setIsSearch(true);
         }
     }
-    // Assign
-    const [openAssign, setOpenAssign] = useState(false);
-    const [dataDoctor, setDataDoctor] = useState([]);
-    const [dataDesc, setDataDesc] = useState();
-    const showAssign = async (event) => {
-        const data = {
-            id: event.currentTarget.dataset.id,
-            cid: event.currentTarget.dataset.cid,
-            desc: event.currentTarget.dataset.desc
-        }
-        setOpenAssign(true);
-        setDataDesc(data)
-        await axiosCli().get(`admin/getDataDoctorByIdCenter/${data.cid}`).then(res => {
-            setDataDoctor(res.data);
-        })
-    }
-    const onSubmit = async (data) => {
-        // console.log(data);
-        if (data['doctor'] == 'null') {
-            return messageApi.open({
-                type: 'error',
-                content: 'Bạn phải chọn nhân viên giải quyết dịch bệnh'
-            })
-        }
-        const allData = {
-            did: data['doctor'],
-            note: data['note'],
-            desc: dataDesc.desc,
-            diseaseId: dataDesc.id
-        }
-        await axiosCli().post('admin/assign-disease', allData).then(res => {
-            if (res.status == 200) {
-                messageApi.open({
-                    type: 'success',
-                    content: res.data.msg
-                });
-                getDataDisease();
-                setOpenAssign(false);
-            } else {
-                messageApi.open({
-                    type: 'error',
-                    content: res.data.msg
-                });
-            }
-        })
-    }
+
 
     return (
         <div>
@@ -205,26 +203,12 @@ function DiseaseManagerDoctor() {
                 </Layout>
             </div>
             {/* Delete */}
-            <Modal title="Xoá" open={openDel} onOk={handelOk} okButtonProps={{ style: { backgroundColor: 'red' } }} onCancel={() => setOpenDel(false)}>
-                <p><strong>Bạn có chắc chắn muốn xoá báo cáo dịch bệnh này ?</strong></p>
+            <Modal title="Từ chối tiếp nhận xử lý dịch bệnh" open={openDel} onOk={handelOk} okButtonProps={{ style: { backgroundColor: 'red' } }} onCancel={() => setOpenDel(false)}>
+                <p><strong>Bạn có chắc chắn muốn từ chối giải quyết dịch bệnh này ?</strong></p>
             </Modal>
-            {/* Assign */}
-            <Modal title="Phân Công Xử Lý Dịch Bệnh" open={openAssign} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={() => setOpenAssign(false)}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="mb-4">
-                        <select name="doctor" id="doctor" {...register('doctor')}>
-                            <option value="null">Chọn Nhân Viên Xử Lý</option>
-                            {dataDoctor && dataDoctor.map((data, index) => (
-                                <option value={data._id} key={index}>{data.fullname}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="desc" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Ghi Chú</label>
-                        <textarea cols={4} rows={8} type="text" {...register('note')} name="note" placeholder="Ghi chú cho nhân viên xử lý ..." id="note" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                    </div>
-                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Gửi</button>
-                </form>
+            {/* Accept */}
+            <Modal title="Tiếp nhận xử lý dịch bệnh" open={openAccept} onOk={handelAcptOk} okButtonProps={{ style: { backgroundColor: 'green' } }} onCancel={() => setOpenAccept(false)}>
+                <p><strong>Bạn có chắc chắn muốn tiếp nhận giải quyết dịch bệnh này ?</strong></p>
             </Modal>
         </div>
     );
