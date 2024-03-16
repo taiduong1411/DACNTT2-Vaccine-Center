@@ -112,9 +112,7 @@ export default function CarouselBlog({ props }) {
                     </div>
                 </div>
             }
-
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/glide.js"></script>
-
         </>
     )
 }

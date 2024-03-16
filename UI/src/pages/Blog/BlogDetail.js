@@ -8,14 +8,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { Button } from "antd";
 import CarouselBlog from "../../components/CarouselCard/CarouselBlog";
+import Footer from "../../components/Footer/Footer";
+import Report from "../../components/Report/Report";
+
 const BlogDetail = () => {
     const { slug } = useParams();
     const nav = useNavigate();
     const [dataBlog, setDataBlog] = useState([]);
     const [dataAllBlog, setDataAllBlog] = useState([]);
+    const [dataCenter, setDataCenter] = useState([]);
     useEffect(() => {
         getDataBlog();
         getAllDataBlog();
+        getDataCenter();
     }, [slug])
     const getDataBlog = async () => {
         await axiosCli().get(`user/blog/${slug}`).then(res => {
@@ -28,6 +33,11 @@ const BlogDetail = () => {
             const data = res.data;
             setDataAllBlog(data.filter((e) => e.slug != slug));
             // setDataAllBlog(data);
+        })
+    }
+    const getDataCenter = async () => {
+        await axiosCli().get('user/data-center').then(res => {
+            setDataCenter(res.data);
         })
     }
     return (
@@ -161,6 +171,12 @@ const BlogDetail = () => {
                     </div>
                 </div>
 
+            </div>
+            <div>
+                <Report props={dataCenter} />
+            </div>
+            <div>
+                <Footer />
             </div>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/glide.js"></script>
         </div>

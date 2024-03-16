@@ -13,6 +13,28 @@ const UserController = {
             console.log(err);
         })
     },
+    getBlogPagination: async (req, res, next) => {
+        const ITEMS_PER_PAGE = 6;
+        const page = +req.query.page || 1; // Trang hiện tại, mặc định là trang 1
+        try {
+            const totalItems = await Blogs.countDocuments(); // Số lượng sản phẩm trong cơ sở dữ liệu
+            const blogs = await Blogs.find()
+                .skip((page - 1) * ITEMS_PER_PAGE)
+                .limit(ITEMS_PER_PAGE);
+
+            return res.status(200).json({
+                blogs: blogs,
+                currentPage: page,
+                hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+            });
+        } catch (err) {
+            res.status(500).json({ msg: 'Lỗi khi tải dữ liệu blog.' });
+        }
+    },
     getBlogBySlug: async (req, res, next) => {
         // console.log(req.params.slug);
         await Blogs.findOne({ slug: req.params.slug }).then(blog => {
@@ -23,6 +45,33 @@ const UserController = {
                 updatedAt: (blog.updatedAt).toLocaleDateString('en-GB')
             }
             return res.status(200).json(blog)
+        }).catch(err => {
+            return res.status(500).json({ msg: 'server error' })
+        })
+    },
+    searchBlog: async (req, res, next) => {
+        await Blogs.find({
+            "$or": [
+                { title: { $regex: req.params.key } },
+                { sub_content: { $regex: req.params.key } },
+                { hashtags: { $in: [req.params.key] } },
+                { author: { $regex: req.params.key } },
+            ],
+        }).then(async blogs => {
+            blogs = blogs.map(blog => {
+                return {
+                    _id: blog._id,
+                    title: blog.title,
+                    sub_content: blog.sub_content,
+                    author: blog.author,
+                    hashtags: blog.hashtags,
+                    status: blog.status,
+                    cover: blog.cover,
+                    slug: blog.slug,
+                    createdAt: (blog.createdAt).toLocaleDateString('en-GB'),
+                }
+            })
+            return res.status(200).json(blogs);
         }).catch(err => {
             return res.status(500).json({ msg: 'server error' })
         })
@@ -63,6 +112,61 @@ const UserController = {
     getAllDataVaccine: async (req, res, next) => {
         Vaccines.find().lean().limit(10).sort({ createdAt: -1 }).then(vaccines => {
             return res.status(200).json(vaccines)
+        })
+    },
+    getVaccinePagination: async (req, res, next) => {
+        const ITEMS_PER_PAGE = 6;
+        const page = +req.query.page || 1; // Trang hiện tại, mặc định là trang 1
+        try {
+            const totalItems = await Vaccines.countDocuments(); // Số lượng sản phẩm trong cơ sở dữ liệu
+            const vaccines = await Vaccines.find()
+                .skip((page - 1) * ITEMS_PER_PAGE)
+                .limit(ITEMS_PER_PAGE);
+
+            return res.status(200).json({
+                vaccines: vaccines,
+                currentPage: page,
+                hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+            });
+        } catch (err) {
+            res.status(500).json({ message: 'Lỗi khi tải dữ liệu sản phẩm.' });
+        }
+    },
+    searchVaccine: async (req, res, next) => {
+        await Vaccines.find({
+            "$or": [
+                { pro_name: { $regex: req.params.key } },
+                { pro_code: { $regex: req.params.key } },
+
+            ]
+        }).then(async vaccines => {
+            vaccines = await Promise.all(
+                vaccines.map(async vaccine => {
+                    return {
+                        _id: vaccine._id,
+                        slug: vaccine.slug,
+                        pro_name: vaccine.pro_name,
+                        pro_code: vaccine.pro_code,
+                        img: vaccine.img,
+                        cover: vaccine.cover,
+                        countCenter: vaccine.centerOf.length,
+                        detailCenter: await Promise.all((vaccine.centerOf).map((e) =>
+                            Centers.findOne({ _id: e.cid }).then(center => {
+                                return center ? { center: center.center_name, amount: e.amount } : null
+                            })
+                        )),
+                        detailAmount: (vaccine.centerOf).map((e) => [{ cid: e.cid, amount: e.amount }]),
+                        createdAt: vaccine.createdAt.toLocaleString('en-GB')
+                    }
+                })
+            )
+            return res.status(200).json(vaccines)
+        }).catch(err => {
+            return res.status(500).json({ msg: 'server err' })
         })
     },
     getHistoryVaccine: async (req, res, next) => {

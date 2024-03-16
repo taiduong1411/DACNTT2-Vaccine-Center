@@ -3,17 +3,22 @@ import NavBar from '../../components/NavbarUser/Navbar'
 import { useEffect, useState } from "react";
 import { axiosCli } from "../../interceptor/axios";
 import { HomeOutlined } from '@ant-design/icons';
-import { Breadcrumb } from 'antd';
+import { Breadcrumb, Button } from 'antd';
 import { Navigate } from "react-router-dom";
+import Footer from "../../components/Footer/Footer";
+import Report from "../../components/Report/Report";
 
 function VaccineDetail() {
     const { slug } = useParams();
     useEffect(() => {
         getDataDetailVaccine();
+        getDataCenter();
     }, [slug]);
     const nav = useNavigate();
     const [dataDetail, setDataDetail] = useState([]);
-    const [dataAllVaccine, setDataAllVaccine] = useState([])
+    const [dataAllVaccine, setDataAllVaccine] = useState([]);
+    const [dataCenter, setDataCenter] = useState([]);
+
     const getDataDetailVaccine = async () => {
         await axiosCli().get(`user/detail-vaccine/${slug}`).then(res => {
             console.log(res.data);
@@ -22,6 +27,11 @@ function VaccineDetail() {
         await axiosCli().get('user/data-vaccine').then(res => {
             let data = res.data
             setDataAllVaccine(data.filter((e) => e.slug != slug));
+        })
+    }
+    const getDataCenter = async () => {
+        await axiosCli().get('user/data-center').then(res => {
+            setDataCenter(res.data);
         })
     }
 
@@ -53,7 +63,7 @@ function VaccineDetail() {
             <div>
                 <div className="mt-4">
                     <div className="text-center flex justify-center mb-8">
-                        <img className="align-middle" width={200} height={100} src={dataDetail.cover} alt="abc" />
+                        <img className="align-middle" width={300} height={100} src={dataDetail.cover} alt="abc" />
                     </div>
                     <h1 className="text-4xl text-center font-bold text-blue-400 mb-12">
                         {dataDetail.pro_name}
@@ -120,28 +130,15 @@ function VaccineDetail() {
                     </div>
                 </div>
             </div>
-            <div className="mt-20">
-                <h1 className="text-2xl mb-5 ml-10 font-bold" style={{ borderLeft: '8px solid black' }}>
-                    &nbsp; Các Vắc Xin Khác
-                </h1>
-                <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 justify-left sm:flex mt-10 mb-10">
-                    {dataAllVaccine.map((data) => (
-                        <div key={data.pro_code} onClick={() => nav(`/vaccine/${data.slug}`)}>
-                            <div className="w-full h-80 sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden">
-                                <img
-                                    className="w-full h-40 object-cover sm:h-44"
-                                    src={`${data.cover}`}
-                                    alt=""
-                                />
-                                <div className="p-4 flex flex-col justify-between h-full">
-                                    <p className="text-lg font-semibold mb-2">{data.pro_name}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            <div className="text-center mb-4 mt-10">
+                <Button style={{ backgroundColor: 'green' }} type="primary" onClick={() => nav('/book-appointment')}>Đặt Lịch</Button>
             </div>
-
+            <div>
+                <Report props={dataCenter} />
+            </div>
+            <div className="mt-10">
+                <Footer />
+            </div>
         </div>
     );
 }

@@ -6,7 +6,7 @@ import 'react-quill/dist/quill.snow.css';
 import { useEffect, useState } from "react";
 import { Table, Space, Badge, Button, Modal, message, Popover, Avatar, Switch } from 'antd'
 import { axiosCli } from "../../../interceptor/axios";
-import { useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form';
 import upload from "../../../utils/upload";
 const { Content } = Layout;
 

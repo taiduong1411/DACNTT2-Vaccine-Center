@@ -2,7 +2,7 @@ import Footer from "../../components/Footer/Footer";
 import Navbar from "../../components/NavbarUser/Navbar";
 import { useEffect, useState } from 'react'
 import { axiosCli } from "../../interceptor/axios";
-import { Button, Spin } from 'antd';
+import { Spin } from 'antd';
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -14,7 +14,7 @@ import { message, notification } from "antd";
 import SliderIntro from "../../components/Silder/SliderIntro";
 import Report from "../../components/Report/Report";
 
-function Home() {
+function Booking() {
     const [messageApi, contextHolderMessage] = message.useMessage();
     const [api, contextHolderNotification] = notification.useNotification();
     const [allData, setData] = useState([]);
@@ -32,11 +32,15 @@ function Home() {
     };
 
     useEffect(() => {
-        getDataAllVaccine();
-        getDataBlog();
+        const intervalId = setInterval(() => {
+            getDataAllVaccine();
+            getDataBlog();
+        }, 3000);
         getDataCenter();
         getDataUser();
         showLoader();
+        // Đảm bảo rằng bạn xóa bỏ setInterval khi component unmount để tránh rò rỉ bộ nhớ
+        return () => clearInterval(intervalId);
     }, []);
     const getDataAllVaccine = async () => {
         await axiosCli().get('user/all-data-vaccine').then(res => {
@@ -126,20 +130,14 @@ function Home() {
             <div className="">
                 <Navbar props={props} />
             </div>
-            <div className="pointer-events-none">
-                <SliderIntro />
-            </div>
-            <div className="mt-1">
-                <img className="w-full" src="/banner.jpeg" alt="" />
-            </div>
             <div className="grid grid-cols-2 m-auto mt-5 max-[1200px]:grid-cols-1" style={{ width: '95%' }}>
                 <div className="max-[1200px]: w-full">
-                    <img src="https://binhphuoc.gov.vn/uploads/binhphuoc/news/2022_11/tiem-vac-xin.png" alt="" />
+                    <img src="https://goacademy.vn/wp-content/uploads/2020/07/loi-ich-cua-phan-mem-dat-lich-cuoc-hen-trong-nganh-dich-vu-kinh-doanh-tmdt-thumbnail.png" alt="" />
                 </div>
                 <div className="">
                     <div className="h-full shadow-md max-[1200px]:w-full max-[1200px]:mr-6 max-[1200px]:mt-10" ref={ref}>
                         <div className="p-12" style={{ marginTop: 'auto' }}>
-                            <p className="text-center text-2xl font-bold">Đặt Lịch Ngay</p>
+                            <p className="text-center text-2xl font-bold">Đặt Lịch</p>
                             <form onSubmit={handleSubmit(onSubmit)} >
                                 <div className="mb-4">
                                     <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900 ">Họ Và Tên</label>
@@ -186,36 +184,6 @@ function Home() {
                     </div>
                 </div>
             </div>
-
-            <div className="mt-20">
-                <h1 className="text-2xl mb-5 ml-10" style={{ borderLeft: '8px solid black' }}>
-                    &nbsp; Danh Mục Vacxine
-                    <div className="text-sm float-right mr-14 underline underline-offset-1">
-                        <Link to={'/all-vaccines/'} className="">Xem tất cả</Link>
-                    </div>
-                </h1>
-                <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 sm:flex justify-left mt-10 mb-10">
-                    <CarouselVaccine props={allData} />
-                </div>
-            </div>
-            <div className="mt-20">
-                <h1 className="text-2xl mb-5 ml-10" style={{ borderLeft: '8px solid black' }}>
-                    &nbsp; Tin Tức
-                    <div className="text-sm float-right mr-14 underline underline-offset-1">
-                        <Link to={'/all-blogs/'}>Xem tất cả</Link>
-                    </div>
-                </h1>
-                <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 justify-left sm:flex mt-10 mb-10">
-                    <CarouselBlog props={allDataBlog} />
-                </div>
-
-            </div>
-            {/* <div className="mt-20">
-                <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 justify-left sm:flex mt-10 mb-10">
-                    <CarouselTestimonial />
-                </div>
-            </div> */}
-
             <Report props={dataCenter} />
             <div>
                 <Footer />
@@ -224,4 +192,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Booking;

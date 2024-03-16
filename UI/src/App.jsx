@@ -27,6 +27,9 @@ import VaccineManager from './pages/Doctor/Vaccine/VaccineManager';
 import VaccineDetailDoctor from './pages/Doctor/Vaccine/VaccineDetail/VaccineDetail';
 import BlogManagerDoctor from './pages/Doctor/BlogManager/BlogManager';
 import DiseaseManagerDoctor from './pages/Doctor/DiseaseManager/DiseaseManager';
+import Booking from './pages/Booking/Booking';
+import AllVaccine from './pages/Vaccine/AllVaccine';
+import AllBlogs from './pages/Blog/AllBlogs';
 function App() {
   return (
     <>
@@ -40,6 +43,9 @@ function App() {
           <Route path='/reset-password' element={<ResetPassword />} />
           <Route path='/vaccine/:slug' element={<VaccineDetail />} />
           <Route path='/blog/:slug' element={<BlogDetail />} />
+          <Route path='/book-appointment' element={<Booking />} />
+          <Route path='/all-vaccines' element={<AllVaccine />} />
+          <Route path='/all-blogs' element={<AllBlogs />} />
           <Route exact path='/' element={<DoctorRoute />}>
             <Route path="/doctor/dashboard" element={<Doctor />} />
             <Route path="/doctor/vaccine-schedule" element={<CalendarVaccine />} />

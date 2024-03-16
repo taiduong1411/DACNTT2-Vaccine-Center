@@ -560,6 +560,34 @@ const DoctorController = {
         await Doctors.findByIdAndUpdate(doctor._id, doctor)
         await Centers.findByIdAndUpdate(center._id, center)
         return res.status(200).json({ msg: 'Tiếp nhận thành công' })
-    }
+    },
+    searchReport: async (req, res, next) => {
+        await Centers.find({
+            "$or": [
+                { center_name: { $regex: req.params.key } },
+                { reportDisease: { $elemMatch: { desc: { $regex: req.params.key } } } }
+            ],
+        }).lean().then(async centers => {
+            let dataReport = [];
+            centers.forEach(center => {
+                const centerId = center._id; // Lấy ID của center
+                const reports = center.reportDisease; // Lấy mảng các báo cáo bệnh tật của center
+
+                // Kiểm tra nếu có báo cáo bệnh tật và là một mảng
+                if (reports && Array.isArray(reports)) {
+                    // Gắn ID của center vào mỗi object trong mảng reportDisease
+                    reports.forEach(report => {
+                        // Thêm trường centerId vào mỗi object trong mảng reportDisease
+                        report.centerId = centerId;
+                        dataReport.push(report); // Thêm object đã được gắn ID vào mảng dataReport
+                    });
+                }
+            });
+            return res.status(200).json(dataReport)
+
+        }).catch(err => {
+            console.log(err);
+        })
+    },
 }
 module.exports = DoctorController;
