@@ -48,10 +48,12 @@ const AdminController = {
     },
     delVaccine: async (req, res, next) => {
         const _id = req.params._id;
+
         try {
             await Vaccines.findByIdAndDelete(_id);
             return res.status(200).json({ msg: 'Xoá Thành Công' })
         } catch (error) {
+
             return res.status(500).json({ msg: 'Xoá Thất Bại' });
         }
     },

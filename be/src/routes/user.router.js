@@ -21,6 +21,8 @@ router.get('/data-center', UserController.getDataCenter);
 router.get('/all-data-vaccine', UserController.getAllDataVaccine);
 router.get('/all-vaccines', UserController.getVaccinePagination);
 router.get('/search-vaccine/:key', UserController.searchVaccine);
+router.get('/vaccine-by-slug/:slug', UserController.getVaccineBySlug);
+
 
 router.get('/history-vaccine', userRole, UserController.getHistoryVaccine);
 router.get('/current-booking', userRole, UserController.getCurrentBooking);

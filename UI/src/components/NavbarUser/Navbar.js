@@ -267,7 +267,7 @@ function Navbar({ props }) {
                 }
             </div>
             {/* Update Information */}
-            <Modal title="Cập Nhật Thông Tin" open={openUpdate} okButtonProps={{ style: { display: 'none' } }} onCancel={handleUpdateCancel}>
+            <Modal title="Cập Nhật Thông Tin" open={openUpdate} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }} onCancel={handleUpdateCancel}>
                 <form onSubmit={handleSubmit(onUpdateSubmit)}>
                     <div>
                         <label htmlFor="Email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Email</label>
@@ -294,15 +294,15 @@ function Navbar({ props }) {
                         <input onChange={(e) => setFile(e.target.files[0])} type="file" name="avatar" id="avatar" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                         {/* <UploadOutlined style={{ marginTop: '20px', fontSize: '30px' }} onClick={upload} /> */}
                     </div>
-                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Submit</button>
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Cập Nhật</button>
                 </form>
             </Modal>
             {/* History Vaccine */}
-            <Modal width={1000} open={isShowHistoryVaccine} onCancel={() => setIsShowHistoryVaccine(!isShowHistoryVaccine)} okButtonProps={{ style: { display: 'none' } }}>
+            <Modal width={1000} open={isShowHistoryVaccine} onCancel={() => setIsShowHistoryVaccine(!isShowHistoryVaccine)} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }}>
                 <Table dataSource={dataHistoryVaccine} columns={columnsHistoryVaccine} />
             </Modal>
             {/* Current Booking */}
-            <Modal width={2000} open={isShowCurrentBooking} onCancel={() => setIsShowCurrentBooking(!isShowCurrentBooking)} okButtonProps={{ style: { display: 'none' } }} >
+            <Modal width={2000} open={isShowCurrentBooking} onCancel={() => setIsShowCurrentBooking(!isShowCurrentBooking)} okButtonProps={{ style: { display: 'none' } }} cancelButtonProps={{ style: { display: 'none' } }}>
                 <Table dataSource={dataCurrentBooking} columns={columnsCurrentBooking} />
             </Modal>
         </nav>

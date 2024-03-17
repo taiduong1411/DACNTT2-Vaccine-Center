@@ -1,48 +1,35 @@
-import Footer from "../../components/Footer/Footer";
+import { useParams } from "react-router-dom";
 import Navbar from "../../components/NavbarUser/Navbar";
-import { useEffect, useState } from 'react'
-import { axiosCli } from "../../interceptor/axios";
-import { Button, Spin } from 'antd';
-import { useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import CarouselVaccine from "../../components/CarouselCard/CarouselVaccine";
-import CarouselBlog from "../../components/CarouselCard/CarouselBlog";
-// import CarouselTestimonial from "../../components/CarouselCard/CarouselTestimonial";
-
-import { message, notification } from "antd";
-import SliderIntro from "../../components/Silder/SliderIntro";
 import Report from "../../components/Report/Report";
+import Footer from "../../components/Footer/Footer";
+import { useForm } from 'react-hook-form';
+import { message, notification } from "antd";
+import { useEffect, useState } from "react";
+import { axiosCli } from "../../interceptor/axios";
 
-function Home() {
+
+
+function BookDetailVaccine() {
+    const { slug } = useParams();
+
     const [messageApi, contextHolderMessage] = message.useMessage();
     const [api, contextHolderNotification] = notification.useNotification();
-    const [allData, setData] = useState([]);
-    const [allDataBlog, setAllDataBlog] = useState([]);
-    const [dataCenter, setDataCenter] = useState([]);
-    const [dataVaccine, setDataVaccine] = useState([]);
-    const [dataUser, setDataUser] = useState([]);
-    const nav = useNavigate();
-    const [spinning, setSpinning] = useState(false);
-    const showLoader = () => {
-        setSpinning(true);
-        setTimeout(() => {
-            setSpinning(false);
-        }, 2000);
-    };
-
+    const { register, handleSubmit } = useForm();
     useEffect(() => {
-        getDataAllVaccine();
-        getDataBlog();
         getDataCenter();
         getDataUser();
-        showLoader();
+        getDataVaccineBySlug();
     }, []);
-    const getDataAllVaccine = async () => {
-        await axiosCli().get('user/all-data-vaccine').then(res => {
-            setData(res.data);
+
+    const [dataCenter, setDataCenter] = useState([]);
+    const getDataCenter = async () => {
+        await axiosCli().get('user/data-center').then(res => {
+            setDataCenter(res.data);
         })
     }
+
+
+    const [dataUser, setDataUser] = useState([]);
     const getDataUser = async () => {
         await axiosCli().get('account/my-info').then(res => {
             if (res.status == 200) {
@@ -52,28 +39,13 @@ function Home() {
             }
         })
     }
-    const getDataBlog = async () => {
-        await axiosCli().get('user/all-blogs').then(res => {
-            setAllDataBlog(res.data);
+    const [dataSlug, setDataSlug] = useState([]);
+    const getDataVaccineBySlug = async () => {
+        await axiosCli().get(`user/vaccine-by-slug/${slug}`).then(res => {
+            setDataSlug(res.data)
         })
     }
-    const getDataCenter = async () => {
-        await axiosCli().get('user/data-center').then(res => {
-            setDataCenter(res.data);
-        })
-    }
-    const getDataVaccine = async (e) => {
-        const id = e.target.value;
-        var res = await axiosCli().post(`user/data-vaccine/${id}`);
-        setDataVaccine(res.data);
-    }
-    // Handle Auto Scroll To Form Booking
-    const ref = useRef(null);
-    const props = () => {
-        ref.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-    // Handle Submit Form Booking
-    const { register, handleSubmit } = useForm();
+
     const onSubmit = async (data) => {
         // Check Date
         const atPresent = new Date();
@@ -95,9 +67,10 @@ function Home() {
             ...data,
             email: dataUser.email,
             phone: dataUser.phone,
-            fullname: dataUser.fullname ? dataUser.fullname : data['fullname']
+            fullname: dataUser.fullname ? dataUser.fullname : data['fullname'],
+            vaccine: dataSlug.vid
         }
-
+        // console.log(dataSubmit);
         await axiosCli().post('/doctor/booking', dataSubmit).then(res => {
             if (res.status == 200) {
                 api.open({
@@ -115,31 +88,22 @@ function Home() {
                 })
             }
         })
-
     }
-
     return (
-        <div className="">
+        <div>
             {contextHolderMessage}
             {contextHolderNotification}
-            <Spin spinning={spinning} fullscreen />
-            <div className="">
-                <Navbar props={props} />
+            <div>
+                <Navbar />
             </div>
-            <div className="pointer-events-none">
-                <SliderIntro />
-            </div>
-            <div className="mt-1">
-                <img className="w-full" src="/banner.jpeg" alt="" />
-            </div>
-            <div className="grid grid-cols-2 m-auto mt-5 max-[1200px]:grid-cols-1" style={{ width: '95%' }}>
+            <div className="grid grid-cols-2 mt-10 m-auto max-[1200px]:grid-cols-1" style={{ width: '95%' }}>
                 <div className="max-[1200px]: w-full">
-                    <img src="https://binhphuoc.gov.vn/uploads/binhphuoc/news/2022_11/tiem-vac-xin.png" alt="" />
+                    <img src="https://goacademy.vn/wp-content/uploads/2020/07/loi-ich-cua-phan-mem-dat-lich-cuoc-hen-trong-nganh-dich-vu-kinh-doanh-tmdt-thumbnail.png" alt="" />
                 </div>
                 <div className="">
-                    <div className="h-full shadow-md max-[1200px]:w-full max-[1200px]:mr-6 max-[1200px]:mt-10" ref={ref}>
+                    <div className="h-full shadow-md max-[1200px]:w-full max-[1200px]:mr-6 max-[1200px]:mt-10">
                         <div className="p-12" style={{ marginTop: 'auto' }}>
-                            <p className="text-center text-2xl font-bold">Đặt Lịch Ngay</p>
+                            <p className="text-center text-2xl font-bold">Đặt Lịch</p>
                             <form onSubmit={handleSubmit(onSubmit)} >
                                 <div className="mb-4">
                                     <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900 ">Họ Và Tên</label>
@@ -163,21 +127,17 @@ function Home() {
                                 </div>
                                 <div className="mb-4">
                                     <label htmlFor="timeBooking" className="block mb-2 text-sm font-medium text-gray-900 ">Chọn Trung Tâm Tiêm</label>
-                                    <select name="center" id="center" {...register('center')} onChange={getDataVaccine}>
+                                    <select name="center" id="center" {...register('center')}>
                                         <option value="null">Chọn Trung Tâm</option>
-                                        {dataCenter?.map((data, index) => (
-                                            <option value={data._id} key={index}>{data.center_name}</option>
+                                        {dataSlug.center?.map((data, index) => (
+                                            <option value={data.cid} key={index}>{data.c_name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div className="mb-4">
                                     <label htmlFor="timeBooking" className="block mb-2 text-sm font-medium text-gray-900 ">Chọn Loại Vắc Xin Cần Tiêm</label>
-                                    <select name="vaccine" id="vaccine" {...register('vaccine')} >
-                                        <option value="null">Chọn Vaccine</option>
-                                        {dataVaccine?.map((data, index) => (
-                                            <option value={data._id} key={index}>{data.pro_name}</option>
-                                        ))}
-                                    </select>
+                                    <input type="text" id="vaccine" {...register('vaccine')} value={dataSlug.pro_name} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Thời Gian Đăng Ký" disabled required />
+
                                 </div>
                                 <button type="submit" className="text-white mb-4 float-right bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Gửi</button>
                             </form>
@@ -186,42 +146,12 @@ function Home() {
                     </div>
                 </div>
             </div>
-
-            <div className="mt-20">
-                <h1 className="text-2xl mb-5 ml-10" style={{ borderLeft: '8px solid black' }}>
-                    &nbsp; Danh Mục Vacxine
-                    <div className="text-sm float-right mr-14 underline underline-offset-1">
-                        <Link to={'/all-vaccines/'} className="">Xem tất cả</Link>
-                    </div>
-                </h1>
-                <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 sm:flex justify-left mt-10 mb-10">
-                    <CarouselVaccine props={allData} />
-                </div>
-            </div>
-            <div className="mt-20">
-                <h1 className="text-2xl mb-5 ml-10" style={{ borderLeft: '8px solid black' }}>
-                    &nbsp; Tin Tức
-                    <div className="text-sm float-right mr-14 underline underline-offset-1">
-                        <Link to={'/all-blogs/'}>Xem tất cả</Link>
-                    </div>
-                </h1>
-                <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 justify-left sm:flex mt-10 mb-10">
-                    <CarouselBlog props={allDataBlog} />
-                </div>
-
-            </div>
-            {/* <div className="mt-20">
-                <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 justify-left sm:flex mt-10 mb-10">
-                    <CarouselTestimonial />
-                </div>
-            </div> */}
-
             <Report props={dataCenter} />
-            <div>
+            <div className="mt-5">
                 <Footer />
             </div>
         </div>
     );
 }
 
-export default Home;
+export default BookDetailVaccine;

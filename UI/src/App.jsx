@@ -30,6 +30,7 @@ import DiseaseManagerDoctor from './pages/Doctor/DiseaseManager/DiseaseManager';
 import Booking from './pages/Booking/Booking';
 import AllVaccine from './pages/Vaccine/AllVaccine';
 import AllBlogs from './pages/Blog/AllBlogs';
+import BookDetailVaccine from './pages/Booking/BookDetailVaccine';
 function App() {
   return (
     <>
@@ -46,6 +47,7 @@ function App() {
           <Route path='/book-appointment' element={<Booking />} />
           <Route path='/all-vaccines' element={<AllVaccine />} />
           <Route path='/all-blogs' element={<AllBlogs />} />
+          <Route path='/book-appointment/:slug' element={<BookDetailVaccine />} />
           <Route exact path='/' element={<DoctorRoute />}>
             <Route path="/doctor/dashboard" element={<Doctor />} />
             <Route path="/doctor/vaccine-schedule" element={<CalendarVaccine />} />

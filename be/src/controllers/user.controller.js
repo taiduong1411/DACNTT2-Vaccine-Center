@@ -76,6 +76,8 @@ const UserController = {
             return res.status(500).json({ msg: 'server error' })
         })
     },
+
+
     getDataVaccineDetail: async (req, res, next) => {
         await Vaccines.findOne({ slug: req.params.slug }).then(vac => {
             return res.status(200).json(vac)
@@ -136,6 +138,35 @@ const UserController = {
             res.status(500).json({ message: 'Lỗi khi tải dữ liệu sản phẩm.' });
         }
     },
+    getVaccineBySlug: async (req, res, next) => {
+        const vaccine = await Vaccines.findOne({ slug: req.params.slug });
+        let center = vaccine.centerOf;
+        const getNameCenter = async (id) => {
+            const center = await Centers.findById(id);
+            return center.center_name;
+        }
+        center = await Promise.all(
+            center.map(async e => {
+                return {
+                    cid: e.cid,
+                    c_name: await getNameCenter(e.cid)
+                }
+            })
+        )
+        const data = {
+            vid: vaccine._id.toString(),
+            pro_name: vaccine.pro_name,
+            center: center
+        }
+        // console.log(data);
+        return res.status(200).json(data);
+    },
+
+
+
+
+
+
     searchVaccine: async (req, res, next) => {
         await Vaccines.find({
             "$or": [

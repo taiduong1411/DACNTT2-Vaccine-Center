@@ -186,7 +186,7 @@ function Vaccine() {
         deleteProduct(dataDel._id);
     }
     const deleteProduct = async (_id) => {
-        await axiosCli().del(`admin/del-product/${_id}`).then(res => {
+        await axiosCli().del(`admin/del-vaccine/${_id}`).then(res => {
             if (res.status == 200) {
                 success(res.data.msg);
                 getDataVaccine();

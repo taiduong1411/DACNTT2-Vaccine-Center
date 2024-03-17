@@ -39,6 +39,7 @@
 <script>
     var request = '';
     var pattern = /đặt\s+lịch/i; // Mẫu để tìm kiếm
+    var partern2 = /dat\s+lich/i
     $(document).on('input', '#kami-mind-chat-widget textarea', function() {
         // Cập nhật biến request mỗi khi có nhập liệu
         request = $(this).val();
@@ -48,7 +49,7 @@
     });
 
     function sendRequest(pattern, request) {
-        if (pattern.test(request)) {
+        if (pattern.test(request) || partern2.test(request)) {
             window.location.href = '/book-appointment';
         } else {
             // Xử lý trường hợp không khớp với mẫu

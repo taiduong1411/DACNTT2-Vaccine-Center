@@ -126,12 +126,12 @@ function VaccineDetail() {
                                     <div dangerouslySetInnerHTML={{ __html: dataDetail.details?.vaccineFaq }} />
                                 </div>
                             </div>
+                            <div className="float-right mb-4 mt-10">
+                                <Button style={{ backgroundColor: 'green' }} size="large" type="primary" onClick={() => nav(`/book-appointment/${slug}`)}>Đặt Lịch</Button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="text-center mb-4 mt-10">
-                <Button style={{ backgroundColor: 'green' }} type="primary" onClick={() => nav('/book-appointment')}>Đặt Lịch</Button>
             </div>
             <div>
                 <Report props={dataCenter} />
