@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/NavbarUser/Navbar";
-import { Pagination, message } from 'antd';
+import { Pagination, message, Button } from 'antd';
+import {
+    ScheduleOutlined
+} from '@ant-design/icons';
 import { axiosCli } from "../../interceptor/axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -21,6 +24,7 @@ function AllVaccine() {
         getDataVaccines();
         getDataBlog();
         getDataCenter();
+
     }, [currentPage])
     const getDataVaccines = async () => {
         await axiosCli().get(`user/all-vaccines?page=${currentPage}`).then(res => {
@@ -30,7 +34,6 @@ function AllVaccine() {
     }
     const getDataBlog = async () => {
         await axiosCli().get('user/all-blogs').then(res => {
-            console.log(res.data);
             setAllDataBlog(res.data);
         })
     }
@@ -40,7 +43,6 @@ function AllVaccine() {
         })
     }
     const handleClickPage = (page) => {
-        console.log(page);
         setCurrentPage(page);
     }
     // search
@@ -76,15 +78,21 @@ function AllVaccine() {
             </div>
             <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6 mt-2 mb-10">
                 {allDataVaccine?.map((data, index) => (
-                    <div key={index} className="w-full mb-4">
-                        <div className="w-full bg-white shadow-sm border hover:shadow-lg rounded-xl overflow-hidden" onClick={() => nav(`/vaccine/${data.slug}`)}>
+                    <div key={index} className="w-full mb-4" >
+                        <div className="w-full bg-white shadow-sm border hover:shadow-lg rounded-xl overflow-hidden" >
                             <img
                                 className="w-full h-40 object-cover"
                                 src={data.cover}
                                 alt=""
+                                onClick={() => nav(`/vaccine/${data.slug}`)}
                             />
                             <div className="p-4">
-                                <p className="text-lg mb-2">{data.pro_name}</p>
+                                <h2 className="text-lg mb-2"><strong>[{data.pro_code}]</strong> {data.pro_name}</h2>
+                            </div>
+                            <div className="float-right mb-4 mt-4 mr-4">
+                                <Button style={{ backgroundColor: 'blue', width: '130px' }} size="large" type="primary" onClick={() => nav(`/book-appointment/${data.slug}`)}>
+                                    <ScheduleOutlined />
+                                    Đặt Lịch</Button>
                             </div>
                         </div>
                     </div>
@@ -103,17 +111,19 @@ function AllVaccine() {
                 <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 justify-left sm:flex mt-10 mb-10">
                     {allDataBlog?.map((blog, index) => (
                         <div key={index}>
-                            <div className="border w-full h-warp-content sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden">
+                            <div className="border w-full h-64 sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden" onClick={() => nav(`/blog/${blog.slug}`)}>
                                 <div className="flex justify-center items-center">
                                     <img
                                         className="w-full h-40 object-cover sm:h-44"
                                         src={`${blog.cover}`}
                                         alt=""
+                                        width={100}
+                                        height={100}
                                     />
                                 </div>
                                 <div className="p-4">
-                                    <p className="text-sm font-semibold mb-2">{blog.title}</p>
-                                    <p className="text-gray-600 text-sm text-ellipsis overflow-hidden whitespace-nowrap">{blog.sub_content}</p>
+                                    <p className="text-sm font-semibold mb-2 truncate">{blog.title}</p>
+                                    <p className="text-gray-600 text-sm truncate">{blog.sub_content}</p>
                                 </div>
                             </div>
                         </div>

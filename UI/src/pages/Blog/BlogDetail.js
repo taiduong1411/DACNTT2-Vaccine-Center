@@ -40,6 +40,11 @@ const BlogDetail = () => {
             setDataCenter(res.data);
         })
     }
+    // handle Tag when click
+    const handleTag = (e) => {
+        const text = e.target.textContent;
+        nav(`/blog/tag/${text}`)
+    }
     return (
         <div>
             <Navbar />
@@ -64,7 +69,7 @@ const BlogDetail = () => {
                         <div className="text-sm ml-4">
                             Tag:
                             {dataBlog.hashtags?.map((tag, index) => (
-                                <Button key={index} className="ml-1">{tag}</Button>
+                                <Button key={index} className="ml-1" onClick={handleTag}>{tag}</Button>
                             ))}
                         </div>
 

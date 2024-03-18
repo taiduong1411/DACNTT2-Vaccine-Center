@@ -43,18 +43,20 @@ export default function CarouselBlog({ props }) {
                             <li></li>
                             <li></li>
                             {props && props?.map((blog) => (
-                                <li key={blog.pro_code} className="mr-4" onClick={() => nav(`/blog/${blog.slug}`)}>
-                                    <div className="border w-full h-warp-content sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden">
+                                <li key={blog.pro_code} className="mr-4">
+                                    <div className="border w-full h-64 sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden" onClick={()=> nav(`/blog/${blog.slug}`)}>
                                         <div className="flex justify-center items-center">
                                             <img
                                                 className="w-full h-40 object-cover sm:h-44"
                                                 src={`${blog.cover}`}
                                                 alt=""
+                                                width={100}
+                                                height={100}
                                             />
                                         </div>
                                         <div className="p-4">
-                                            <p className="text-sm font-semibold mb-2">{blog.title}</p>
-                                            <p className="text-gray-600 text-sm text-ellipsis overflow-hidden whitespace-nowrap">{blog.sub_content}</p>
+                                            <p className="text-sm font-semibold mb-2 truncate">{blog.title}</p>
+                                            <p className="text-gray-600 text-sm truncate">{blog.sub_content}</p>
                                         </div>
                                     </div>
                                 </li>
@@ -64,7 +66,7 @@ export default function CarouselBlog({ props }) {
                         </ul>
                     </div>
                     <div
-                        className="absolute left-0 top-1/2 flex h-0 w-full items-center justify-between px-4 "
+                        className="absolute left-0 top-1/2 flex h-0 w-full items-center justify-between px-4"
                         data-glide-el="controls"
                     >
                         <button

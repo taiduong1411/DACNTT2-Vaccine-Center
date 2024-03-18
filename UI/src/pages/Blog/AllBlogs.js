@@ -75,22 +75,22 @@ function AllBlog() {
                 </form>
             </div>
             <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6 mt-2 mb-10">
-                {allDataBlog?.map((data, index) => (
-                    <div key={index} className="w-full mb-4">
-                        <div className="w-full bg-white shadow-sm border hover:shadow-lg rounded-xl overflow-hidden" onClick={() => nav(`/blog/${data.slug}`)}>
-                            <img
-                                className="w-full h-40 object-cover"
-                                src={data.cover}
-                                alt=""
-                            />
-                            <div className="p-4">
-                                <p className="text-lg mb-2">{data.title}</p>
-                                <p className="text-lg mb-2">{data.sub_content}</p>
+                {allDataBlog?.map((blog, index) => (
+                    <div key={index} className="w-full mb-4" onClick={() => nav(`/blog/${blog.slug}`)}>
+                        <div key={blog.id} className="bg-white rounded-md shadow-md transition-transform hover:scale-105 hover:shadow-lg aspect-w-1 aspect-h-1 p-4 sm:px-6 md:p-4">
+                            <div className="flex justify-center items-center mb-2">
+                                <img src={blog.cover} alt="" className="h-16 w-16 object-cover rounded-full" />
                             </div>
+                            <h2 className="text-lg font-semibold mb-1 line-clamp-2">{blog.title}</h2>
+                            <p className="text-sm text-gray-600 line-clamp-3">{blog.sub_content}</p>
+                            {/* Thêm các thông tin khác của blog cần hiển thị */}
                         </div>
                     </div>
                 ))}
             </div>
+
+
+
             <div className="flex justify-center mb-4">
                 <Pagination defaultCurrent={1} total={50} onChange={handleClickPage} />
             </div>

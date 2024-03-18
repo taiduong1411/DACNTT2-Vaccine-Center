@@ -11,6 +11,7 @@ const AdminController = {
     getAllVaccines: async (req, res, next) => {
         await Vaccines.find().lean().sort({ createdAt: -1 }).then(async vaccines => {
             if (!vaccines) return res.status(400).json({ msg: 'Chưa có vaccine' })
+
             vaccines = await Promise.all(
                 vaccines.map(async vaccine => {
                     return {

@@ -10,7 +10,7 @@ router.get('/all-blogs', UserController.getBlogs);
 router.get('/blog/:slug', UserController.getBlogBySlug);
 router.get('/blog-pagination', UserController.getBlogPagination);
 router.get('/search-blog/:key', UserController.searchBlog);
-
+router.get('/get-blog-by-tag/:query', UserController.getDataBlogByTag);
 
 
 

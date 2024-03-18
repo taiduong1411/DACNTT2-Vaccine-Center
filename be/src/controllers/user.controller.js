@@ -76,6 +76,24 @@ const UserController = {
             return res.status(500).json({ msg: 'server error' })
         })
     },
+    getDataBlogByTag: async (req, res, next) => {
+        try {
+            const query = req.params.query;
+            // Sử dụng biểu thức chính quy để tìm kiếm các bài blog có chứa thẻ được chỉ định
+            const regex = new RegExp(query, 'i'); // 'i' là để tìm kiếm không phân biệt hoa thường
+            const blogs = await Blogs.find({ hashtags: regex });
+            return res.status(200).json(blogs);
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            console.error(error);
+            return res.status(500).json({ message: 'Server Error' });
+        }
+
+    },
+
+
+
+
 
 
     getDataVaccineDetail: async (req, res, next) => {
@@ -128,6 +146,7 @@ const UserController = {
             return res.status(200).json({
                 vaccines: vaccines,
                 currentPage: page,
+                total: totalItems,
                 hasNextPage: ITEMS_PER_PAGE * page < totalItems,
                 hasPreviousPage: page > 1,
                 nextPage: page + 1,
