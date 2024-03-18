@@ -4,6 +4,7 @@ import { Table, Layout, Badge, Space, Button, Modal, message } from 'antd';
 import { useEffect, useState } from "react";
 import { axiosCli } from "../../../interceptor/axios";
 import { useForm } from 'react-hook-form';
+import Loader from "../../../components/Spin/Spin";
 const { Content } = Layout;
 function DiseaseManager() {
     const columns = [
@@ -199,6 +200,9 @@ function DiseaseManager() {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="flex">
                 <Sidebar props={6} />

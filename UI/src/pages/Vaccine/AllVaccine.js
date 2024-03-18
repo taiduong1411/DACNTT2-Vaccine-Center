@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import Footer from "../../components/Footer/Footer";
 import Report from "../../components/Report/Report";
 import { useForm } from 'react-hook-form';
+import Loader from "../../components/Spin/Spin";
 
 function AllVaccine() {
     const nav = useNavigate();
@@ -67,6 +68,9 @@ function AllVaccine() {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="max-w-[1200px] mx-auto grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6 mt-10 mb-1" >
                 <form className="space-y-1 md:space-y-6 mt-4 mb-10" onSubmit={handleSubmit(onSearchSubmit)}>
@@ -90,10 +94,21 @@ function AllVaccine() {
                                 <h2 className="text-lg mb-2"><strong>[{data.pro_code}]</strong> {data.pro_name}</h2>
                             </div>
                             <div className="float-right mb-4 mt-4 mr-4">
-                                <Button style={{ backgroundColor: 'blue', width: '130px' }} size="large" type="primary" onClick={() => nav(`/book-appointment/${data.slug}`)}>
-                                    <ScheduleOutlined />
-                                    Đặt Lịch</Button>
+                                <Button
+                                    className="flex items-center justify-center"
+                                    style={{ backgroundColor: 'blue', width: '130px' }}
+                                    size="large"
+                                    type="primary"
+                                    onClick={() => nav(`/book-appointment/${data.slug}`)}
+                                >
+                                    <ScheduleOutlined className="text-2xl mr-1 mb-1" />
+                                    <span className="align-middle">Đặt Lịch</span>
+                                </Button>
                             </div>
+
+
+
+
                         </div>
                     </div>
                 ))}

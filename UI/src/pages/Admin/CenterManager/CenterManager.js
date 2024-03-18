@@ -5,6 +5,9 @@ const { Content } = Layout;
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { axiosCli } from "../../../interceptor/axios";
+import { FileAddOutlined } from '@ant-design/icons';
+import Loader from "../../../components/Spin/Spin";
+
 const CenterManager = () => {
     const columns = [
         {
@@ -24,7 +27,20 @@ const CenterManager = () => {
             key: 'Action',
             render: (record) => (
                 <Space size="middle">
-                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} onClick={showUpdate} >Update</Button>
+                    <Button
+                        type="primary"
+                        style={{ backgroundColor: 'green' }}
+                        data-id={record._id}
+                        onClick={showUpdate}
+                        icon={<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M5 18.89H6.41421L15.7279 9.57627L14.3137 8.16206L5 17.4758V18.89ZM21 20.89H3V16.6473L16.435 3.21231C16.8256 2.82179 17.4587 2.82179 17.8492 3.21231L20.6777 6.04074C21.0682 6.43126 21.0682 7.06443 20.6777 7.45495L9.24264 18.89H21V20.89ZM15.7279 6.74785L17.1421 8.16206L18.5563 6.74785L17.1421 5.33363L15.7279 6.74785Z"></path>
+                        </svg>}
+
+                    >
+
+
+                        Sửa
+                    </Button>
                 </Space>
             ),
         },
@@ -111,7 +127,11 @@ const CenterManager = () => {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
+
             <div className="flex">
                 <Sidebar props={3} />
                 <Layout>
@@ -121,7 +141,7 @@ const CenterManager = () => {
                         }}
                     >
                         <div>
-                            <Button className="float-right mb-5" onClick={showAdd}>Add New</Button>
+                            <Button className="float-right mb-5" onClick={showAdd} icon={<FileAddOutlined />}>Add New</Button>
                             <Table columns={columns} dataSource={dataCenter} />
                         </div>
                     </Content>
@@ -175,7 +195,7 @@ const CenterManager = () => {
                         <label htmlFor="Quận" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Tên Quận</label>
                         <input type="text" {...register('district')} defaultValue={dataUpdate?.address?.district} placeholder="Tên Quận" name="district" id="district" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" required={true} />
                     </div>
-                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Tạo Trung Tâm</button>
+                    <button type="submit" className="w-full mt-5 text-white bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-800 dark:hover:bg-primary-800 dark:focus:ring-primary-800">Cập Nhật Trung Tâm</button>
                 </form>
 
             </Modal>

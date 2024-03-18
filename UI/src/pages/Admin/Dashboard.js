@@ -6,8 +6,12 @@ import { axiosCli } from "../../interceptor/axios";
 import { Line } from "react-chartjs-2";
 import Chart from 'chart.js/auto';
 import { Doughnut } from "react-chartjs-2"
+import { useNavigate } from "react-router-dom";
+import Loader from "../../components/Spin/Spin";
+
 const { Content } = Layout;
 const Dashboard = () => {
+    const nav = useNavigate();
     const [data, setData] = useState([]);
     useEffect(() => {
         getDataDashboard();
@@ -19,6 +23,9 @@ const Dashboard = () => {
     }
     return (
         <div>
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="flex">
                 <Sidebar props={1} />
@@ -33,7 +40,9 @@ const Dashboard = () => {
                                 <p className="text-2xl"><strong>OVERVIEW</strong></p>
                             </div>
                             <div className="min-[1200px]:mt-5 max-[1200px]:mt-5 min-[1200px]:w-fit min-[1200px]:m-auto  max-[1200px]:w-fit max-[1200px]:items-center">
-                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
+                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105"
+                                    onClick={() => nav('/admin/dashboard')}
+                                >
                                     <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }} >
                                         <div className="flex items-center justify-center p-4">
                                             <img src="/users.svg" alt="abc" width={50} height={50} />
@@ -44,7 +53,9 @@ const Dashboard = () => {
                                         </div>
                                     </Card>
                                 </div>
-                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
+                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105"
+                                    onClick={() => nav('/admin/doctor-manager')}
+                                >
                                     <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }}>
                                         <div className="flex items-center justify-center p-4">
                                             <img src="/doctor.svg" alt="abc" width={50} height={50} />
@@ -55,7 +66,9 @@ const Dashboard = () => {
                                         </div>
                                     </Card>
                                 </div>
-                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
+                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105"
+                                    onClick={() => nav('/admin/center-manager')}
+                                >
                                     <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }}>
                                         <div className="flex items-center justify-center p-4">
                                             <img src="/hospital.svg" alt="abc" width={50} height={50} />
@@ -66,7 +79,9 @@ const Dashboard = () => {
                                         </div>
                                     </Card>
                                 </div>
-                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
+                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105"
+                                    onClick={() => nav('/admin/vaccine-manager')}
+                                >
                                     <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }}>
                                         <div className="flex items-center justify-center p-4">
                                             <img src="/vaccine.svg" alt="abc" width={50} height={50} />
@@ -77,7 +92,9 @@ const Dashboard = () => {
                                         </div>
                                     </Card>
                                 </div>
-                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105">
+                                <div className="inline-block mr-4 hover:shadow-lg max-[1200px]:mt-3 transition-transform transform hover:scale-105"
+                                    onClick={() => nav('/admin/blog-manager')}
+                                >
                                     <Card className="overflow-hidden bg-white rounded-lg shadow-md" style={{ width: '200px' }}>
                                         <div className="flex items-center justify-center p-4">
                                             <img src="/blog.svg" alt="abc" width={50} height={50} />
@@ -201,7 +218,7 @@ const Dashboard = () => {
                                     </Card>
                                 </div>
                             </div>
-                            <div className="min-[1200px]:mt-10 min-[1200px]:w-fit min-[1200px]:m-auto mb-5">
+                            {/* <div className="min-[1200px]:mt-10 min-[1200px]:w-fit min-[1200px]:m-auto mb-5">
                                 <div className="inline-block mr-5">
                                     <Card
                                         style={{
@@ -297,7 +314,7 @@ const Dashboard = () => {
                                         />
                                     </Card>
                                 </div>
-                            </div>
+                            </div> */}
 
                         </div>
                     </Content>

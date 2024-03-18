@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { message, notification } from "antd";
 import { useEffect, useState } from "react";
 import { axiosCli } from "../../interceptor/axios";
+import Loader from "../../components/Spin/Spin";
 
 
 
@@ -93,6 +94,9 @@ function BookDetailVaccine() {
         <div>
             {contextHolderMessage}
             {contextHolderNotification}
+            <div>
+                <Loader />
+            </div>
             <div>
                 <Navbar />
             </div>

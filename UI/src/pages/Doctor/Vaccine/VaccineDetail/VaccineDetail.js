@@ -9,6 +9,8 @@ const { Content } = Layout;
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './vaccineDetail.css'
+import Loader from "../../../../components/Spin/Spin";
+
 const VaccineDetailDoctor = () => {
     // CONFIG
     const {
@@ -243,6 +245,9 @@ const VaccineDetailDoctor = () => {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="mt-4 mb-4 ml-6">
                 <Breadcrumb

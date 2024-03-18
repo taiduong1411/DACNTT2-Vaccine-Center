@@ -9,6 +9,9 @@ import upload from "../../../utils/upload";
 import { Link } from "react-router-dom";
 // import axios from "axios";
 // import props from '../../../components/Upload/Upload';
+import { FileAddOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import Loader from "../../../components/Spin/Spin";
+
 const { Content } = Layout;
 function Vaccine() {
     const columns = [
@@ -64,8 +67,8 @@ function Vaccine() {
             key: 'Action',
             render: (record) => (
                 <Space size="middle">
-                    <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record._id} data-name={record.pro_name} data-code={record.pro_code} data-cover={record.cover} onClick={showDel}>Delete</Button>
-                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} onClick={showUpdate} >Update</Button>
+                    <Button type="primary" style={{ backgroundColor: 'red' }} icon={<DeleteOutlined />} data-id={record._id} data-name={record.pro_name} data-code={record.pro_code} data-cover={record.cover} onClick={showDel}>Delete</Button>
+                    <Button type="primary" style={{ backgroundColor: 'green' }} icon={<EditOutlined />} data-id={record._id} onClick={showUpdate} >Update</Button>
                 </Space>
             ),
         },
@@ -259,6 +262,9 @@ function Vaccine() {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="flex">
                 <Sidebar props={2} />
@@ -274,7 +280,7 @@ function Vaccine() {
                             background: colorBgContainer,
                             borderRadius: borderRadiusLG,
                         }}>
-                            <Button onClick={showAdd} className="float-right mb-5">Thêm mới</Button>
+                            <Button onClick={showAdd} className="float-right mb-5" icon={<FileAddOutlined />}>Thêm mới</Button>
                             <div>
                                 <form className="space-y-1 md:space-y-6 mt-4 mb-10" onSubmit={handleSubmit(onSearchSubmit)}>
                                     <div className="relative mb-8">

@@ -8,6 +8,8 @@ import { Table, Space, Badge, Button, Modal, message, Popover, Avatar, Switch } 
 import { axiosCli } from "../../../interceptor/axios";
 import { useForm } from 'react-hook-form';
 import upload from "../../../utils/upload";
+import { FileAddOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import Loader from "../../../components/Spin/Spin";
 const { Content } = Layout;
 
 
@@ -87,8 +89,8 @@ const BlogManager = () => {
             key: 'Action',
             render: (record) => (
                 <Space size="middle">
-                    <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record._id} data-name={record.title} onClick={showDel} >Delete</Button>
-                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} onClick={showUpdateOpen} >Update</Button>
+                    <Button type="primary" style={{ backgroundColor: 'red' }} icon={<DeleteOutlined />} data-id={record._id} data-name={record.title} onClick={showDel} >Xoá</Button>
+                    <Button type="primary" style={{ backgroundColor: 'green' }} icon={<EditOutlined />} data-id={record._id} onClick={showUpdateOpen} >Cập Nhật</Button>
                 </Space>
             ),
         },
@@ -263,6 +265,9 @@ const BlogManager = () => {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="flex">
                 <Sidebar props={5} />
@@ -272,7 +277,7 @@ const BlogManager = () => {
                             margin: '24px 16px 0',
                         }}
                     >
-                        <Button className="float-right mb-5" onClick={showAdd}>Add New</Button>
+                        <Button className="float-right mb-5" onClick={showAdd} icon={<FileAddOutlined />}>Add New</Button>
                         <div>
                             <form className="space-y-1 md:space-y-6 mt-4 mb-10" onSubmit={handleSubmit(onSearchSubmit)}>
                                 <div className="relative mb-8">

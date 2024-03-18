@@ -10,6 +10,7 @@ import { Button } from "antd";
 import CarouselBlog from "../../components/CarouselCard/CarouselBlog";
 import Footer from "../../components/Footer/Footer";
 import Report from "../../components/Report/Report";
+import Loader from "../../components/Spin/Spin";
 
 const BlogDetail = () => {
     const { slug } = useParams();
@@ -47,7 +48,11 @@ const BlogDetail = () => {
     }
     return (
         <div>
+            <div>
+                <Loader />
+            </div>
             <Navbar />
+
             <div className="mt-10">
                 <h1 className="text-4xl text-center font-bold text-orange-400 underline mb-10">
                     {dataBlog.title}
@@ -107,17 +112,19 @@ const BlogDetail = () => {
                                 <li></li>
                                 {dataAllBlog && dataAllBlog?.map((blog) => (
                                     <li key={blog.pro_code} className="mr-4" onClick={() => nav(`/blog/${blog.slug}`)}>
-                                        <div className="border w-full h-warp-content sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden">
+                                        <div className="border w-full h-64 sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden" onClick={() => nav(`/blog/${blog.slug}`)}>
                                             <div className="flex justify-center items-center">
                                                 <img
                                                     className="w-full h-40 object-cover sm:h-44"
                                                     src={`${blog.cover}`}
                                                     alt=""
+                                                    width={100}
+                                                    height={100}
                                                 />
                                             </div>
                                             <div className="p-4">
-                                                <p className="text-sm font-semibold mb-2">{blog.title}</p>
-                                                <p className="text-gray-600 text-sm text-ellipsis overflow-hidden whitespace-nowrap">{blog.sub_content}</p>
+                                                <p className="text-sm font-semibold mb-2 truncate">{blog.title}</p>
+                                                <p className="text-gray-600 text-sm truncate">{blog.sub_content}</p>
                                             </div>
                                         </div>
                                     </li>

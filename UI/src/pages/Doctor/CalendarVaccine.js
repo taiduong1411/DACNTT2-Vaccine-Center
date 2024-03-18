@@ -4,6 +4,8 @@ import Sidebar from "../../components/Sidebar/Doctor/sidebar";
 import { Layout, theme, Table, Space, Popover, Button, Modal, message, Badge } from 'antd';
 import { axiosCli } from "../../interceptor/axios";
 import { useForm } from "react-hook-form";
+import { EditOutlined, CheckOutlined } from '@ant-design/icons';
+import Loader from "../../components/Spin/Spin";
 
 
 
@@ -55,8 +57,8 @@ function CalendarVaccine() {
                 } else {
                     return <div>
                         <Space size="middle">
-                            <Button type="primary" style={{ backgroundColor: 'green' }} onClick={showConfirm} data-id={record._id} >Sửa Lịch</Button>
-                            <Button type="primary" style={{ backgroundColor: 'blue' }} onClick={confirmBooking} data-id={record._id} >Xác Nhận</Button>
+                            <Button type="primary" style={{ backgroundColor: 'green' }} icon={<EditOutlined />} onClick={showConfirm} data-id={record._id} >Sửa Lịch</Button>
+                            <Button type="primary" style={{ backgroundColor: 'blue' }} icon={<CheckOutlined />} onClick={confirmBooking} data-id={record._id} >Xác Nhận</Button>
                         </Space>
                     </div>
                 }
@@ -168,6 +170,9 @@ function CalendarVaccine() {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="flex">
                 <Sidebar props={2} />

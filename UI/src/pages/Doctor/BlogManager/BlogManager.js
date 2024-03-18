@@ -8,6 +8,9 @@ import { Table, Space, Badge, Button, Modal, message, Popover, Avatar, Switch } 
 import { axiosCli } from "../../../interceptor/axios";
 import { useForm } from 'react-hook-form'
 import upload from "../../../utils/upload";
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import Loader from "../../../components/Spin/Spin";
+
 const { Content } = Layout;
 
 
@@ -87,8 +90,8 @@ const BlogManagerDoctor = () => {
             key: 'Action',
             render: (record) => (
                 <Space size="middle">
-                    <Button type="primary" style={{ backgroundColor: 'red' }} data-id={record._id} data-name={record.title} onClick={showDel} >Delete</Button>
-                    <Button type="primary" style={{ backgroundColor: 'green' }} data-id={record._id} onClick={showUpdateOpen} >Update</Button>
+                    <Button type="primary" style={{ backgroundColor: 'red' }} icon={<DeleteOutlined />} data-id={record._id} data-name={record.title} onClick={showDel} >Xoá</Button>
+                    <Button type="primary" style={{ backgroundColor: 'green' }} icon={<EditOutlined />} data-id={record._id} onClick={showUpdateOpen} >Cập Nhật</Button>
                 </Space>
             ),
         },
@@ -263,6 +266,9 @@ const BlogManagerDoctor = () => {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="flex">
                 <Sidebar props={4} />

@@ -84,19 +84,11 @@ function Navbar() {
             key: '0',
         },
         {
-            label: <a href="https://www.aliyun.com">Lịch Sử Tiêm</a>,
-            key: '1',
-        },
-        {
-            label: <a href="https://www.aliyun.com">Lịch Tiêm Hiện Tại</a>,
-            key: '2',
-        },
-        {
             type: 'divider',
         },
         {
             label: <Link to="/login">Đăng Xuất</Link>,
-            key: '3',
+            key: '1',
         },
     ];
 

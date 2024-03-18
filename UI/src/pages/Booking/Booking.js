@@ -13,6 +13,7 @@ import CarouselBlog from "../../components/CarouselCard/CarouselBlog";
 import { message, notification } from "antd";
 import SliderIntro from "../../components/Silder/SliderIntro";
 import Report from "../../components/Report/Report";
+import Loader from "../../components/Spin/Spin";
 
 function Booking() {
     const [messageApi, contextHolderMessage] = message.useMessage();
@@ -23,24 +24,11 @@ function Booking() {
     const [dataVaccine, setDataVaccine] = useState([]);
     const [dataUser, setDataUser] = useState([]);
     const nav = useNavigate();
-    const [spinning, setSpinning] = useState(false);
-    const showLoader = () => {
-        setSpinning(true);
-        setTimeout(() => {
-            setSpinning(false);
-        }, 2000);
-    };
-
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            getDataAllVaccine();
-            getDataBlog();
-        }, 3000);
+        getDataAllVaccine();
+        getDataBlog();
         getDataCenter();
         getDataUser();
-        showLoader();
-        // Đảm bảo rằng bạn xóa bỏ setInterval khi component unmount để tránh rò rỉ bộ nhớ
-        return () => clearInterval(intervalId);
     }, []);
     const getDataAllVaccine = async () => {
         await axiosCli().get('user/all-data-vaccine').then(res => {
@@ -126,14 +114,18 @@ function Booking() {
         <div className="">
             {contextHolderMessage}
             {contextHolderNotification}
-            <Spin spinning={spinning} fullscreen />
+            <div>
+                <Loader />
+            </div>
             <div className="">
                 <Navbar props={props} />
             </div>
             <div className="grid grid-cols-2 m-auto mt-5 max-[1200px]:grid-cols-1" style={{ width: '95%' }}>
                 <div className="max-[1200px]: w-full">
-                    <img src="https://goacademy.vn/wp-content/uploads/2020/07/loi-ich-cua-phan-mem-dat-lich-cuoc-hen-trong-nganh-dich-vu-kinh-doanh-tmdt-thumbnail.png" alt="" />
+                    <img src="https://goacademy.vn/wp-content/uploads/2020/07/loi-ich-cua-phan-mem-dat-lich-cuoc-hen-trong-nganh-dich-vu-kinh-doanh-tmdt-thumbnail.png" width={800} height={200} alt="" />
+                    <img src="https://www.gosell.vn/blog/wp-content/uploads/2021/03/quanlydatlichlagi-1024x657.jpg" alt="" />
                 </div>
+
                 <div className="">
                     <div className="h-full shadow-md max-[1200px]:w-full max-[1200px]:mr-6 max-[1200px]:mt-10" ref={ref}>
                         <div className="p-12" style={{ marginTop: 'auto' }}>
@@ -177,7 +169,17 @@ function Booking() {
                                         ))}
                                     </select>
                                 </div>
-                                <button type="submit" className="text-white mb-4 float-right bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit</button>
+                                <button type="submit" className="text-white mb-4 float-right bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center flex items-center">
+                                    {/* Đặt SVG và văn bản trong một phần tử div với các lớp flex và items-center */}
+                                    <div className="flex items-center">
+                                        {/* Icon SVG */}
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                                            <path d="M1.94607 9.31543C1.42353 9.14125 1.4194 8.86022 1.95682 8.68108L21.043 2.31901C21.5715 2.14285 21.8746 2.43866 21.7265 2.95694L16.2733 22.0432C16.1223 22.5716 15.8177 22.59 15.5944 22.0876L11.9999 14L17.9999 6.00005L9.99992 12L1.94607 9.31543Z"></path>
+                                        </svg>
+                                        {/* Văn bản */}
+                                        <span className="ml-2">Gửi</span>
+                                    </div>
+                                </button>
                             </form>
                         </div>
 

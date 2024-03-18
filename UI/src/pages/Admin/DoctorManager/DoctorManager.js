@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { axiosCli } from "../../../interceptor/axios";
 import { useForm } from 'react-hook-form';
 import upload from '../../../utils/upload';
+import { FileAddOutlined, EditOutlined } from '@ant-design/icons';
+import Loader from "../../../components/Spin/Spin";
+
 const { Content } = Layout;
 const DoctorManager = () => {
     const columns = [
@@ -46,7 +49,7 @@ const DoctorManager = () => {
             key: 'Action',
             render: (record) => (
                 <Space size="middle">
-                    <Button type="primary" style={{ backgroundColor: 'blue' }} data-id={record._id} onClick={showUpdate} >Cập Nhật</Button>
+                    <Button type="primary" style={{ backgroundColor: 'green' }} icon={<EditOutlined />} data-id={record._id} onClick={showUpdate} >Cập Nhật</Button>
                 </Space>
             ),
         },
@@ -189,6 +192,9 @@ const DoctorManager = () => {
     return (
         <div>
             {contextHolder}
+            <div>
+                <Loader />
+            </div>
             <Navbar />
             <div className="flex">
                 <Sidebar props={4} />
@@ -198,7 +204,7 @@ const DoctorManager = () => {
                             margin: '24px 16px 0',
                         }}
                     >
-                        <Button className="float-right mb-5" onClick={showAdd}>Add New</Button>
+                        <Button className="float-right mb-5" onClick={showAdd} icon={<FileAddOutlined />}>Add New</Button>
                         <div>
                             <form className="space-y-1 md:space-y-6 mt-4 mb-10" onSubmit={handleSubmit(onSearchSubmit)}>
                                 <div className="relative mb-8">

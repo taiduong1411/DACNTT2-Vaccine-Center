@@ -7,6 +7,7 @@ import { Breadcrumb, Button } from 'antd';
 import { Navigate } from "react-router-dom";
 import Footer from "../../components/Footer/Footer";
 import Report from "../../components/Report/Report";
+import Loader from "../../components/Spin/Spin";
 
 function VaccineDetail() {
     const { slug } = useParams();
@@ -37,6 +38,9 @@ function VaccineDetail() {
 
     return (
         <div>
+            <div>
+                <Loader />
+            </div>
             <NavBar />
             <div className="ml-4 mt-4">
                 <Breadcrumb
