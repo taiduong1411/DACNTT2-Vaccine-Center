@@ -147,16 +147,18 @@ const DoctorController = {
     },
     getSearchBooking: async (req, res, next) => {
         try {
+            const token = jwt_decode.decodeToken(req.headers['authorization']);
+            const account = await Accounts.findById(token._id);
+            const doctor = await Doctors.findOne({ email: account.email });
             await Bookings.find(
                 {
                     "$or": [
                         { email: { $regex: req.params.key } },
                         { fullname: { $regex: req.params.key } },
                         { phone: { $regex: req.params.key } },
-                        { dateBooking: { $regex: req.params.key } },
-                        { timeBooking: { $regex: req.params.key } },
                     ],
-                    isCancel: false
+                    isCancel: false,
+                    cid: doctor.centerOf
                 }
             ).then(async bookings => {
                 // if (!bookings) return res.status(300).json({ msg: 'Không có kết quả tìm kiếm' })
