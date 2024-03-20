@@ -13,6 +13,7 @@ const UserModel = new Schema({
             cid: String,
             dateBooking: String,
             timeBooking: String,
+            status: String
         }]
     },
     currentSchedule: {
@@ -21,6 +22,7 @@ const UserModel = new Schema({
             cid: String,
             dateBooking: String,
             timeBooking: String,
+            status: String,
             _id: String
         }]
     }

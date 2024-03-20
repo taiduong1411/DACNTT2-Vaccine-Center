@@ -10,6 +10,8 @@ router.get('/data-booking', doctorRole, DoctorController.getDataBooking);
 router.get('/getDataBookingById/:id', doctorRole, DoctorController.getDataBookingById);
 router.get('/confirm-booking/:id', doctorRole, DoctorController.getConfirmBooking);
 router.get('/search-booking/:key', doctorRole, DoctorController.getSearchBooking);
+router.get('/confirm-success/:id', doctorRole, DoctorController.getConfirmSuccess);
+router.get('/confirm-cancel/:id', doctorRole, DoctorController.getConfirmCancel);
 // Vaccine
 router.get('/all-vaccines', DoctorController.getAllVaccines);
 router.post('/add-vaccine', doctorRole, DoctorController.addVaccine);

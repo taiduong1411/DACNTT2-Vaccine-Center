@@ -244,7 +244,8 @@ const UserController = {
                         timeBooking: d.timeBooking,
                         v_name: await getNameVaccine(d.vid),
                         c_name: await getNameCenter(d.cid),
-                        slug: await getSlugVaccine(d.vid)
+                        slug: await getSlugVaccine(d.vid),
+                        status: d.status
                     }
                 })
             )
@@ -279,6 +280,7 @@ const UserController = {
                         v_name: await getNameVaccine(d.vid),
                         c_name: await getNameCenter(d.cid),
                         slug: await getSlugVaccine(d.vid),
+                        status: d.status,
                         _id: d._id
                     }
                 })

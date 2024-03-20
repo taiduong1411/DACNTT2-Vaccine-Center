@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Sidebar/Doctor/navbar";
 import Sidebar from "../../components/Sidebar/Doctor/sidebar";
-import { Layout, theme, Table, Space, Popover, Button, Modal, message, Badge } from 'antd';
+import { Layout, theme, Table, Space, Popover, Button, Modal, message, Tag } from 'antd';
 import { axiosCli } from "../../interceptor/axios";
 import { useForm } from "react-hook-form";
-import { EditOutlined, CheckOutlined } from '@ant-design/icons';
+import { EditOutlined, CheckOutlined, DeleteOutlined } from '@ant-design/icons';
 import Loader from "../../components/Spin/Spin";
 
 
@@ -47,24 +47,47 @@ function CalendarVaccine() {
             key: 'v_name',
         },
         {
-            title: 'Action',
+            title: 'Trạng Thái',
             key: 'Action',
             render: (record) => {
-                if (record.status === true) {
+                if (record.status == '2') {
                     return <div>
-                        <Badge status="success" text='Đã Xác Nhận' />
+                        <Tag color="purple">Đã xác nhận lịch</Tag>
+                    </div>
+                } else if (record.status == '1') {
+                    return <div>
+                        <Tag color="gold">Chờ xác nhận lịch</Tag>
+                    </div>
+                } else if (record.status == '4') {
+                    return <div>
+                        <Tag color="red">Lịch đã bị huỷ</Tag>
                     </div>
                 } else {
                     return <div>
-                        <Space size="middle">
-                            <Button type="primary" style={{ backgroundColor: 'green' }} icon={<EditOutlined />} onClick={showConfirm} data-id={record._id} >Sửa Lịch</Button>
-                            <Button type="primary" style={{ backgroundColor: 'blue' }} icon={<CheckOutlined />} onClick={confirmBooking} data-id={record._id} >Xác Nhận</Button>
-                        </Space>
+                        <Tag color="green">Tiêm Thành Công</Tag>
                     </div>
                 }
             }
 
-        },
+        }, {
+            title: 'Hành Động',
+            key: 'action',
+            render: (record) => {
+                if (record.status == '2') {
+                    return <div>
+                        <Button type="primary" style={{ backgroundColor: 'green', width: '128px', marginRight: '6px' }} onClick={showSuccess} icon={<CheckOutlined />} data-id={record._id} >Thành Công</Button>
+                        <Button type="primary" style={{ backgroundColor: 'red', width: '120px', }} icon={<DeleteOutlined />} onClick={showCancel} data-id={record._id} >Vắng Mặt</Button>
+                    </div>
+                } else if (record.status == '1') {
+                    return <div>
+                        <Button type="primary" style={{ backgroundColor: 'orange', width: '120px', marginRight: '6px' }} icon={<EditOutlined />} onClick={showConfirm} data-id={record._id} >Sửa Lịch</Button>
+                        <Button type="primary" style={{ backgroundColor: 'blue', width: '120px', }} icon={<CheckOutlined />} onClick={confirmBooking} data-id={record._id} >Xác Nhận</Button>
+                    </div>
+                } else {
+                    return ''
+                }
+            }
+        }
     ];
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -166,6 +189,40 @@ function CalendarVaccine() {
         } else {
             setIsSearch(true);
         }
+    }
+    // Show Success 
+    const showSuccess = async (e) => {
+        const idSuccess = e.currentTarget.dataset.id;
+        await axiosCli().get(`doctor/confirm-success/${idSuccess}`).then(res => {
+            if (res.status == 200) {
+                messageApi.open({
+                    type: 'success',
+                    content: res.data.msg
+                })
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: res.data.msg
+                })
+            }
+        })
+    }
+    // Show Cancel
+    const showCancel = async (e) => {
+        const idCancel = e.currentTarget.dataset.id;
+        await axiosCli().get(`doctor/confirm-cancel/${idCancel}`).then(res => {
+            if (res.status == 200) {
+                messageApi.open({
+                    type: 'success',
+                    content: res.data.msg
+                })
+            } else {
+                messageApi.open({
+                    type: 'error',
+                    content: res.data.msg
+                })
+            }
+        })
     }
     return (
         <div>

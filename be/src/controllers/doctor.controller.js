@@ -11,8 +11,20 @@ const slugify = require('slugify');
 const moment = require('moment');
 const DoctorController = {
     postBooking: async (req, res, next) => {
+        const amountBooking = 1;
+        let vaccine = await Vaccines.findById(req.body.vaccine);
+        let centerOf = vaccine.centerOf;
+        centerOf.forEach((item, index) => {
+            if (item.cid.toString() === req.body.center) {
+                centerOf[index].amount = parseInt(centerOf[index].amount) - amountBooking;
+            }
+        });
+        if (parseInt(centerOf[0].amount) < 1) {
+            return res.status(300).json({ msg: `${vaccine.pro_name} đang tạm hết hàng tại trung tâm. Vui lòng chọn trung tâm khác hoặc liên hệ ngay với chúng tôi` })
+        }
+        await Vaccines.findByIdAndUpdate(req.body.vaccine, { centerOf: centerOf });
+
         await Bookings.findOne({ phone: req.body.phone }).then(async booking => {
-            // if (booking) return res.status(300).json({ msg: 'Số Điện Thoại Đã Có Đặt Lịch' })
             const data = {
                 email: req.body.email ? req.body.email : '',
                 fullname: req.body.fullname ? req.body.fullname : '',
@@ -20,7 +32,8 @@ const DoctorController = {
                 dateBooking: req.body.dateBooking,
                 timeBooking: req.body.timeBooking,
                 cid: req.body.center,
-                vid: req.body.vaccine
+                vid: req.body.vaccine,
+                status: '1'
             }
             let vaccine = await Vaccines.findById(data.vid);
             let center = await Centers.findById(data.cid);
@@ -33,6 +46,7 @@ const DoctorController = {
                 } else {
                     const dataCurrent = {
                         ...data,
+                        status: '1',
                         _id: booking._id
                     }
                     await Users.findByIdAndUpdate(user._id, { $push: { currentSchedule: dataCurrent } }, { new: true })
@@ -54,6 +68,9 @@ const DoctorController = {
             let data = bookings.filter(e => e.cid == doctor.centerOf);
             const getNameVaccine = async (vid) => {
                 let vaccine = await Vaccines.findById(vid);
+                if (!vaccine) {
+                    return 'Vắc xin đã bị xoá'
+                }
                 return vaccine.pro_name;
             }
             data = await Promise.all(
@@ -112,7 +129,7 @@ const DoctorController = {
         }
     },
     getConfirmBooking: async (req, res, next) => {
-        await Bookings.findByIdAndUpdate(req.params.id, { status: true }).then(async booking => {
+        await Bookings.findByIdAndUpdate(req.params.id, { status: '2' }).then(async booking => {
             const user = await Users.findOne({ email: booking.email });
             if (!user) {
                 const data = {
@@ -122,6 +139,7 @@ const DoctorController = {
                         vid: booking.vid,
                         dateBooking: booking.dateBooking,
                         timeBooking: booking.timeBooking,
+                        status: '1',
                         _id: (booking._id).toString()
                     }]
                 }
@@ -132,6 +150,7 @@ const DoctorController = {
                     vid: booking.vid,
                     dateBooking: booking.dateBooking,
                     timeBooking: booking.timeBooking,
+                    status: '1',
                     _id: (booking._id).toString()
                 }
                 let dataSchedule = user.currentSchedule;
@@ -185,6 +204,44 @@ const DoctorController = {
         } catch (error) {
             return res.status(500).json({ msg: 'error' })
         }
+    },
+    getConfirmSuccess: async (req, res, next) => {
+        await Bookings.findByIdAndUpdate(req.params.id, { status: '3' }).then(async booking => {
+            let user = await Users.findOne({ email: booking.email });
+            let history = user.vac_history;
+
+            // Tìm và cập nhật trạng thái của booking trong lịch sử
+            history.forEach((item, index) => {
+                if (item._id.toString() === req.params.id) {
+                    history[index].status = '2';
+                }
+            });
+
+            // Cập nhật lịch sử mới vào người dùng
+            await Users.findOneAndUpdate({ email: booking.email }, { vac_history: history });
+            return res.status(200).json({ msg: 'Hoàn Thành Tiêm' });
+        }).catch(err => {
+            console.error('Error updating booking and user history:', err);
+        });
+    },
+    getConfirmCancel: async (req, res, next) => {
+        await Bookings.findByIdAndUpdate(req.params.id, { status: '4' }).then(async booking => {
+            let user = await Users.findOne({ email: booking.email });
+            let history = user.vac_history;
+
+            // Tìm và cập nhật trạng thái của booking trong lịch sử
+            history.forEach((item, index) => {
+                if (item._id.toString() === req.params.id) {
+                    history[index].status = '3';
+                }
+            });
+
+            // Cập nhật lịch sử mới vào người dùng
+            await Users.findOneAndUpdate({ email: booking.email }, { vac_history: history });
+            return res.status(200).json({ msg: 'Lịch Tiêm Đã Huỷ' });
+        }).catch(err => {
+            console.error('Error updating booking and user history:', err);
+        });
     },
     // Vaccine
     getAllVaccines: async (req, res, next) => {

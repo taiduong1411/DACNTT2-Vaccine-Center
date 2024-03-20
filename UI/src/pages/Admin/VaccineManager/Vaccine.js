@@ -137,9 +137,8 @@ function Vaccine() {
         const centerUpload = centerRef.current.value;
         if (amount.length < 1 || center.length < 1 || center == 'null') return
         setDataBeforeAdd([...dataBeforeAdd, { center: center, amount: amount }]);
-        setDataBeforeAddSend([...dataBeforeAddSend, { cid: centerUpload, amount: amount }]);
+        setDataBeforeAddSend([...dataBeforeAddSend, { cid: centerUpload, amount: parseInt(amount) }]);
         amountRef.current.value = '0';
-        // centerRef.current.value = '';
     }
     const removeData = (index) => {
         setDataBeforeAdd(dataBeforeAdd.filter((el, i) => i !== index));
@@ -320,7 +319,7 @@ function Vaccine() {
                     </div>
                     <div className="mb-4 inline-block">
                         <label htmlFor="amount" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">Số Lượng</label>
-                        <input ref={amountRef} type="text" id="amount" placeholder="Số Lượng Vaccine" defaultValue={0} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        <input ref={amountRef} type="number" id="amount" placeholder="Số Lượng Vaccine" defaultValue={0} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                     </div>
                     <div className="mb-4 inline-block float-right mt-7 mr-4">
                         <img src="/add.svg" width={30} height={30} alt="abc" onClick={addCenter} />

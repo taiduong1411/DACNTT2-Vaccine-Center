@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button, Dropdown, Space, Avatar, Modal, message, Table } from 'antd';
+import { Button, Dropdown, Space, Avatar, Modal, message, Table, Tag } from 'antd';
 import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
@@ -34,7 +34,26 @@ function Navbar({ props }) {
                     </div>
                 )
             }
-        }
+        },
+        {
+            title: 'Trạng Thái',
+            key: 'status',
+            render: (record) => {
+                if (record.status == '1') {
+                    return <div>
+                        <Tag color="gold">Đã Xác Nhận Lịch Tiêm</Tag>
+                    </div>
+                } else if (record.status == '2') {
+                    return <div>
+                        <Tag color="green">Tiêm Thành Công</Tag>
+                    </div>
+                } else {
+                    return <div>
+                        <Tag color="red">Tiêm Thất Bại</Tag>
+                    </div>
+                }
+            }
+        },
     ];
     const columnsCurrentBooking = [
         {
@@ -59,6 +78,25 @@ function Navbar({ props }) {
                 return <div>
                     <Link to={`/vaccine/${record.slug}`}>{record.v_name}</Link>
                 </div>
+            }
+        },
+        {
+            title: 'Trạng Thái',
+            key: 'status',
+            render: (record) => {
+                if (record.status == '1') {
+                    return (
+                        <div>
+                            <Tag color="gold">Chờ xác nhận</Tag>
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div>
+                            <Tag color="green">Đã xác nhận</Tag>
+                        </div>
+                    )
+                }
             }
         },
         {
