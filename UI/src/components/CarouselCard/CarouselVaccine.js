@@ -1,7 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useEffect } from "react"
-import Glide from "@glidejs/glide"
-import { useNavigate } from "react-router-dom"
+import { useEffect } from "react";
+import Glide from "@glidejs/glide";
+import { useNavigate } from "react-router-dom";
+import { Button } from 'antd';
+
 export default function CarouselVaccine({ props }) {
     const nav = useNavigate();
     useEffect(() => {
@@ -52,7 +54,7 @@ export default function CarouselVaccine({ props }) {
                                             alt=""
                                         />
                                         <div className="p-4 flex flex-col justify-between h-full">
-                                            <p className="text-lg  mb-2">{data.pro_name}</p>
+                                            <p className="text-lg mb-2">{data.pro_name}</p>
                                         </div>
                                     </div>
                                 </li>
@@ -61,7 +63,6 @@ export default function CarouselVaccine({ props }) {
                             <li></li>
                         </ul>
                     </div>
-                    {/*    <!-- Controls --> */}
                     <div
                         className="absolute left-0 top-1/2 flex h-0 w-full items-center justify-between px-4 "
                         data-glide-el="controls"

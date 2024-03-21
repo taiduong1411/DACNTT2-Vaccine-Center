@@ -180,7 +180,19 @@ const UserController = {
         // console.log(data);
         return res.status(200).json(data);
     },
-
+    getCheckAmountVaccine: async (req, res, next) => {
+        let vaccine = await Vaccines.findById(req.params._id);
+        let centerOf = vaccine.centerOf;
+        centerOf.forEach((item, index) => {
+            if (item.cid.toString() === req.params.idCenter) {
+                // centerOf[index].amount = parseInt(centerOf[index].amount) + amountBooking;
+                return centerOf[index].amount;
+            } else {
+                return centerOf[index].amount = 0;
+            }
+        });
+        return res.status(200).json(centerOf[0].amount);
+    },
 
 
 
@@ -292,7 +304,16 @@ const UserController = {
     },
     getCancelBooking: async (req, res, next) => {
         try {
+            const amountBooking = 1;
             let booking = await Bookings.findById(req.params.id)
+            let vaccine = await Vaccines.findById(booking.vid);
+            let centerOf = vaccine.centerOf;
+            centerOf.forEach((item, index) => {
+                if (item.cid.toString() === booking.cid) {
+                    centerOf[index].amount = parseInt(centerOf[index].amount) + amountBooking;
+                }
+            });
+            await Vaccines.findByIdAndUpdate(booking.vid, { centerOf: centerOf });
             await Bookings.findByIdAndUpdate(req.params.id, { isCancel: true });
             let user = await Users.findOne({ email: booking.email });
             let updateDataSchedule = (user.currentSchedule).filter(e => e._id != req.params.id);

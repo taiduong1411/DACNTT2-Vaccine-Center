@@ -44,7 +44,7 @@ export default function CarouselBlog({ props }) {
                             <li></li>
                             {props && props?.map((blog) => (
                                 <li key={blog.pro_code} className="mr-4">
-                                    <div className="border w-full h-64 sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden" onClick={()=> nav(`/blog/${blog.slug}`)}>
+                                    <div className="border w-full h-64 sm:w-72 bg-white shadow-md hover:shadow-lg rounded-xl overflow-hidden" onClick={() => nav(`/blog/${blog.slug}`)}>
                                         <div className="flex justify-center items-center">
                                             <img
                                                 className="w-full h-40 object-cover sm:h-44"
@@ -65,7 +65,7 @@ export default function CarouselBlog({ props }) {
                             <li></li>
                         </ul>
                     </div>
-                    <div
+                    {/* <div
                         className="absolute left-0 top-1/2 flex h-0 w-full items-center justify-between px-4"
                         data-glide-el="controls"
                     >
@@ -111,10 +111,10 @@ export default function CarouselBlog({ props }) {
                                 />
                             </svg>
                         </button>
-                    </div>
+                    </div> */}
                 </div>
             }
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/glide.js"></script>
+            {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/glide.js"></script> */}
         </>
     )
 }

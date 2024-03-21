@@ -196,7 +196,7 @@ function Home() {
 
             <div className="mt-20">
                 <h1 className="text-2xl mb-5 ml-10" style={{ borderLeft: '8px solid black' }}>
-                    &nbsp; Danh Mục Vacxine
+                    &nbsp; Vắc Xin Mới Nhất
                     <div className="text-sm float-right mr-14 underline underline-offset-1">
                         <Link to={'/all-vaccines/'} className="">Xem tất cả</Link>
                     </div>
@@ -207,7 +207,7 @@ function Home() {
             </div>
             <div className="mt-20">
                 <h1 className="text-2xl mb-5 ml-10" style={{ borderLeft: '8px solid black' }}>
-                    &nbsp; Tin Tức
+                    &nbsp; Tin Tức Mới Nhất
                     <div className="text-sm float-right mr-14 underline underline-offset-1">
                         <Link to={'/all-blogs/'}>Xem tất cả</Link>
                     </div>

@@ -84,12 +84,13 @@ function Footer() {
         //         </div>
         //     </div>
         // </footer>
-        <footer className="bg-gray-100 py-8 text-center">
+        <footer className="bg-gray-100 py-8 text-center w-full">
             <div className="container mx-auto flex justify-center items-center">
-                <img src="/main-logo.png" alt="Company Logo" className="w-12 h-12 mr-2" />
-                <p className="text-gray-600">© 2024 Your Company. All rights reserved.</p>
+                <img src="/main-logo.png" alt="Company Logo" className="w-16 h-16 mr-4" />
+                <p className="text-gray-800">© 2024 Your Company. All rights reserved.</p>
             </div>
         </footer>
+
     );
 }
 

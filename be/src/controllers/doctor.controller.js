@@ -225,17 +225,25 @@ const DoctorController = {
         });
     },
     getConfirmCancel: async (req, res, next) => {
+        const amountBooking = 1;
+        let booking = await Bookings.findById(req.params.id)
+        let vaccine = await Vaccines.findById(booking.vid);
+        let centerOf = vaccine.centerOf;
+        centerOf.forEach((item, index) => {
+            if (item.cid.toString() === booking.cid) {
+                centerOf[index].amount = parseInt(centerOf[index].amount) + amountBooking;
+            }
+        });
+        await Vaccines.findByIdAndUpdate(booking.vid, { centerOf: centerOf });
         await Bookings.findByIdAndUpdate(req.params.id, { status: '4' }).then(async booking => {
             let user = await Users.findOne({ email: booking.email });
             let history = user.vac_history;
-
             // Tìm và cập nhật trạng thái của booking trong lịch sử
             history.forEach((item, index) => {
                 if (item._id.toString() === req.params.id) {
                     history[index].status = '3';
                 }
             });
-
             // Cập nhật lịch sử mới vào người dùng
             await Users.findOneAndUpdate({ email: booking.email }, { vac_history: history });
             return res.status(200).json({ msg: 'Lịch Tiêm Đã Huỷ' });
